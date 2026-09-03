@@ -402,9 +402,9 @@
     display: flex;
     gap: 0.5rem;
     flex-wrap: wrap;
-    max-inline-size: 72rem;
+    max-inline-size: var(--content-max);
     margin: 0 auto;
-    padding: 0 1.5rem 0.75rem;
+    padding: 0 var(--page-gutter) 0.75rem;
   }
 
   .category {
