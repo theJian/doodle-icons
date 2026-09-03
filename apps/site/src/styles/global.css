@@ -31,7 +31,8 @@
     --font-sans: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
     --page-gutter: clamp(1.25rem, 4vw, 3.5rem);
-    --content-max: 82rem;
+    --content-gutter: 1.5rem;
+    --content-max: 72rem;
     --ease: cubic-bezier(0.22, 1, 0.36, 1);
     color-scheme: light;
     font-family: var(--font-sans);
@@ -333,7 +334,7 @@
   .catalog {
     max-inline-size: var(--content-max);
     margin-inline: auto;
-    padding: 0 var(--page-gutter) clamp(5rem, 9vw, 8rem);
+    padding: 0 var(--content-gutter) clamp(5rem, 9vw, 8rem);
     scroll-margin-block-start: 5.5rem;
   }
 
@@ -395,7 +396,7 @@
   }
 
   .categories {
-    margin-inline: calc(var(--page-gutter) * -1);
+    margin-inline: calc(var(--content-gutter) * -1);
   }
 
   .category-track {
@@ -404,7 +405,7 @@
     flex-wrap: wrap;
     max-inline-size: var(--content-max);
     margin: 0 auto;
-    padding: 0 var(--page-gutter) 0.75rem;
+    padding: 0 var(--content-gutter) 0.75rem;
   }
 
   .category {
@@ -548,7 +549,7 @@
     min-block-size: 7.5rem;
     max-inline-size: var(--content-max);
     margin-inline: auto;
-    padding: 2rem var(--page-gutter);
+    padding: 2rem var(--content-gutter);
     border-block-start: 1px solid var(--rule);
     color: var(--muted);
     font-size: 0.86rem;
