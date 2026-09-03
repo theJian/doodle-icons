@@ -409,6 +409,7 @@
   }
 
   .category {
+    font: revert;
     padding: 0.35rem 0.85rem;
     border: 1px solid var(--rule);
     border-radius: 999px;
@@ -417,7 +418,6 @@
     cursor: pointer;
     font-size: 0.85rem;
     transition: all 0.15s;
-    white-space: nowrap;
   }
 
   .category span {
@@ -434,10 +434,6 @@
     border-color: var(--accent);
     background: var(--accent);
     color: #ffffff;
-  }
-
-  .category.is-active span {
-    opacity: 0.6;
   }
 
   :root[data-theme='dark'] .category.is-active {
