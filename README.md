@@ -1,6 +1,6 @@
 # doodle-icons
 
-> 451 hand-drawn doodle icons across 15 categories. Free (CC0) and open source — components for React, React Native, Vue and Flutter, plus a searchable docs site.
+> 400+ handcrafted doodle icons across 15 categories. Free (CC0) and open source — components for React, React Native, Vue and Flutter, plus a searchable docs site.
 
 > **Icons designed by [Khushmeen Sidhu](https://khushmeen.com/icons.html)** — [Doodle Icons](https://khushmeen.com/icons.html).
 > This repository repackages his icon set as components for React, React Native, Vue and Flutter.
@@ -95,7 +95,7 @@ import icons from '@doodle-icons/metadata/icons.json';
 ## Repository layout
 
 ```
-icons/                  ← source of truth: 451 SVGs in 15 category folders (CC0)
+icons/                  ← source of truth: 400+ handcrafted SVGs in 15 category folders (CC0)
 scripts/                ← codegen: scans icons/ and generates every package
 packages/
   react/                ← @doodle-icons/react        (generated src/ → tsup → dist)

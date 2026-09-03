@@ -2,7 +2,7 @@
 
 Hand-drawn [doodle icons](https://github.com/jian/doodle-icons) for Flutter.
 
-451 icons across 15 categories, rendered with `flutter_svg`.
+400+ handcrafted icons across 15 categories, rendered with `flutter_svg`.
 
 ## Usage
 
