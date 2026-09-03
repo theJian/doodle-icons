@@ -1,7 +1,7 @@
 {
   "name": "@doodle-icons/react",
   "version": "0.1.0",
-  "description": "Hand-drawn doodle icons for React. 451 icons across 15 categories.",
+  "description": "Hand-drawn doodle icons for React. 400+ handcrafted icons across 15 categories.",
   "license": "MIT",
   "sideEffects": false,
   "type": "module",

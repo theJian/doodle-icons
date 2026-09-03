@@ -1,7 +1,7 @@
 {
   "name": "@doodle-icons/react-native",
   "version": "0.1.0",
-  "description": "Hand-drawn doodle icons for React Native (react-native-svg). 451 icons across 15 categories.",
+  "description": "Hand-drawn doodle icons for React Native (react-native-svg). 400+ handcrafted icons across 15 categories.",
   "license": "MIT",
   "sideEffects": false,
   "type": "module",
