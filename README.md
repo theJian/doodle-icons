@@ -2,6 +2,9 @@
 
 > 451 hand-drawn doodle icons across 15 categories. Free (CC0) and open source — components for React, React Native, Vue and Flutter, plus a searchable docs site.
 
+> **Icons designed by [Khushmeen Sidhu](https://khushmeen.com/icons.html)** — [Doodle Icons](https://khushmeen.com/icons.html).
+> This repository repackages his icon set as components for React, React Native, Vue and Flutter.
+
 **Browse all icons:** the site deploys to GitHub Pages (`Settings → Pages → Source: GitHub Actions` on your repo) and is searchable, filterable by category, and gives copy-paste snippets for every framework.
 
 ## Packages
@@ -104,7 +107,7 @@ apps/site/              ← Astro site (GitHub Pages)
 .github/workflows/      ← CI (build + flutter analyze) & Pages deployment
 ```
 
-The monorepo follows the same approach as [iconoir](https://github.com/iconoir-icons/iconoir): SVGs are the single source of truth, and per-framework packages are fully generated from them.
+The monorepo follows the same approach as [iconoir](https://github.com/iconoir-icons/iconoir): SVGs are the single source of truth, and per-framework packages are fully generated from them. The icon artwork itself is © [Khushmeen Sidhu](https://khushmeen.com/icons.html), dedicated to the public domain.
 
 ## Development
 
@@ -138,5 +141,5 @@ Notes:
 
 ## License
 
-- Icons (`icons/`): [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/) — public domain, no attribution required.
+- Icons (`icons/`): designed by **[Khushmeen Sidhu](https://khushmeen.com/icons.html)** ([Doodle Icons](https://khushmeen.com/icons.html)), released under [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/) — public domain, no attribution required. Credit is given here anyway because it's the right thing to do.
 - All package code: [MIT](LICENSE).
