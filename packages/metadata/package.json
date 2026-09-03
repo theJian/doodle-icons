@@ -1,0 +1,21 @@
+{
+  "name": "@doodle-icons/metadata",
+  "version": "0.1.0",
+  "description": "Metadata (names, categories, viewBoxes) for every icon in the doodle-icons set.",
+  "license": "MIT",
+  "sideEffects": false,
+  "main": "./icons.json",
+  "exports": {
+    ".": "./icons.json"
+  },
+  "files": ["icons.json"],
+  "scripts": {
+    "build": "bun ../../scripts/build-metadata.ts"
+  },
+  "keywords": ["icons", "doodle", "metadata"],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jian/doodle-icons.git",
+    "directory": "packages/metadata"
+  }
+}

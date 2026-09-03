@@ -1,0 +1,36 @@
+{
+  "name": "@doodle-icons/vue",
+  "version": "0.1.0",
+  "description": "Hand-drawn doodle icons for Vue 3. 451 icons across 15 categories.",
+  "license": "MIT",
+  "sideEffects": false,
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "bun ../../scripts/build-vue.ts"
+  },
+  "peerDependencies": {
+    "vue": "^3.3"
+  },
+  "devDependencies": {
+    "tsup": "^8.5.0",
+    "vue": "^3.5.0"
+  },
+  "keywords": ["icons", "svg", "doodle", "hand-drawn", "vue"],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jian/doodle-icons.git",
+    "directory": "packages/vue"
+  },
+  "homepage": "https://github.com/jian/doodle-icons#readme"
+}
