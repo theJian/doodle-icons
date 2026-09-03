@@ -1,0 +1,40 @@
+{
+  "name": "@doodle-icons/react-native",
+  "version": "0.1.0",
+  "description": "Hand-drawn doodle icons for React Native (react-native-svg). 451 icons across 15 categories.",
+  "license": "MIT",
+  "sideEffects": false,
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "bun ../../scripts/build-react-native.ts"
+  },
+  "peerDependencies": {
+    "react": "^17 || ^18 || ^19",
+    "react-native": "*",
+    "react-native-svg": ">=14"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.0",
+    "react": "^19.1.0",
+    "react-native-svg": "^15.12.0",
+    "tsup": "^8.5.0"
+  },
+  "keywords": ["icons", "svg", "doodle", "hand-drawn", "react-native"],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jian/doodle-icons.git",
+    "directory": "packages/react-native"
+  },
+  "homepage": "https://github.com/jian/doodle-icons#readme"
+}
