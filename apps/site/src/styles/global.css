@@ -343,7 +343,7 @@
     align-items: center;
     max-inline-size: 28rem;
     min-block-size: 2.75rem;
-    margin-inline: auto;
+    margin: 0 auto 1.25rem;
     border: 1px solid var(--rule-strong);
     border-radius: 999px;
     background: var(--canvas);
@@ -395,18 +395,19 @@
   }
 
   .categories {
-    margin-block-start: 1.25rem;
+    margin-inline: calc(var(--page-gutter) * -1);
   }
 
   .category-track {
     display: flex;
-    align-items: center;
     gap: 0.5rem;
     flex-wrap: wrap;
+    max-inline-size: 72rem;
+    margin: 0 auto;
+    padding: 0 1.5rem 0.75rem;
   }
 
   .category {
-    min-block-size: 2.25rem;
     padding: 0.35rem 0.85rem;
     border: 1px solid var(--rule);
     border-radius: 999px;
@@ -414,14 +415,13 @@
     color: var(--muted);
     cursor: pointer;
     font-size: 0.85rem;
+    transition: all 0.15s;
     white-space: nowrap;
   }
 
   .category span {
-    margin-inline-start: 0.2rem;
-    color: var(--muted);
-    font-family: var(--font-mono);
-    font-size: 0.78rem;
+    margin-inline-start: 0.15rem;
+    opacity: 0.6;
   }
 
   .category:hover {
@@ -436,14 +436,17 @@
   }
 
   .category.is-active span {
-    color: inherit;
-    opacity: 0.8;
+    opacity: 0.6;
+  }
+
+  :root[data-theme='dark'] .category.is-active {
+    color: var(--canvas);
   }
 
   .count {
     margin-block: 0.75rem 1rem;
     color: var(--muted);
-    font-size: 0.95rem;
+    font-size: 0.85rem;
   }
 
   .icon-grid {
@@ -913,14 +916,6 @@
 
   .search-wrap {
     min-block-size: 3rem;
-  }
-
-  .categories {
-    margin-block-start: 1rem;
-  }
-
-  .category-track {
-    gap: 0.5rem;
   }
 
   #search {
