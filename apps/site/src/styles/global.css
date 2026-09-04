@@ -260,6 +260,8 @@
   }
 
   .button {
+    --button-shadow-color: var(--ink);
+
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -271,32 +273,36 @@
     font-size: 0.9rem;
     font-weight: 650;
     text-decoration: none;
+    box-shadow: 0.25rem 0.25rem 0 var(--button-shadow-color);
+    translate: 0;
     transition: translate 180ms var(--ease), box-shadow 180ms var(--ease), background 180ms var(--ease);
   }
 
   .button:hover {
-    translate: 0 -0.125rem;
+    box-shadow: 0.125rem 0.125rem 0 var(--button-shadow-color);
+    translate: 0.125rem 0.125rem;
+  }
+
+  .button:active {
+    box-shadow: 0 0 0 var(--button-shadow-color);
+    translate: 0.25rem 0.25rem;
   }
 
   .button-primary {
     border-color: var(--accent);
     background: var(--accent);
     color: #ffffff;
-    box-shadow: 0.25rem 0.25rem 0 var(--ink);
   }
 
   .button-primary:hover {
     background: var(--accent-hover);
-    box-shadow: 0.125rem 0.125rem 0 var(--ink);
   }
 
   .button-secondary {
+    --button-shadow-color: var(--rule-strong);
+
     background: var(--canvas);
     color: var(--ink);
-  }
-
-  .button-secondary:hover {
-    box-shadow: 0.25rem 0.25rem 0 var(--rule);
   }
 
   .button svg {
@@ -518,6 +524,7 @@
     background: transparent;
     color: var(--ink);
     cursor: pointer;
+    box-shadow: inset 0 0 0 0 transparent;
     transition: background 160ms ease, box-shadow 160ms ease;
   }
 
@@ -525,10 +532,10 @@
     display: none;
   }
 
-  .icon-card:hover {
-    z-index: 1;
+  .icon-card:hover,
+  .icon-card:focus-visible {
     background: color-mix(in oklab, var(--accent), transparent 96%);
-    box-shadow: inset 0 0 0 2px var(--accent), 0.25rem 0.25rem 0 var(--accent);
+    box-shadow: inset 0 0 0 2px var(--accent);
   }
 
   .icon-card .glyph {
@@ -536,12 +543,15 @@
     place-items: center;
     inline-size: 4.5rem;
     block-size: 4.5rem;
-    transition: rotate 220ms var(--ease), scale 220ms var(--ease);
+    scale: 1;
+    translate: 0;
+    transition: scale 220ms var(--ease), translate 220ms var(--ease);
   }
 
-  .icon-card:hover .glyph {
-    rotate: -2deg;
-    scale: 1.07;
+  .icon-card:hover .glyph,
+  .icon-card:focus-visible .glyph {
+    scale: 1.04;
+    translate: 0 -0.2rem;
   }
 
   .icon-card .glyph svg {
