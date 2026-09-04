@@ -172,13 +172,25 @@
     border-color: var(--rule-strong);
   }
 
-  .theme-toggle svg {
-    inline-size: 1.25rem;
-    fill: none;
-    stroke: currentColor;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    stroke-width: 1.7;
+  .theme-icon {
+    display: grid;
+    grid-area: 1 / 1;
+    place-items: center;
+  }
+
+  .theme-icon-sunny,
+  :root[data-theme='dark'] .theme-icon-night {
+    display: none;
+  }
+
+  :root[data-theme='dark'] .theme-icon-sunny {
+    display: grid;
+  }
+
+  .theme-icon svg {
+    display: block;
+    inline-size: 1.4rem;
+    block-size: 1.4rem;
   }
 
   .mobile-nav {
