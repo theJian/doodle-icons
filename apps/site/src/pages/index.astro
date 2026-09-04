@@ -27,6 +27,9 @@ const searchIndex = icons.map((icon) => ({
 const heroIcons = ['rocket', 'heart', 'cloud', 'camera']
   .map((name) => icons.find((icon) => icon.kebabName === name))
   .filter((icon): icon is IconDef => Boolean(icon));
+
+const nightIcon = icons.find((icon) => icon.kebabName === 'night');
+const sunnyIcon = icons.find((icon) => icon.kebabName === 'sunny');
 ---
 
 <!doctype html>
@@ -52,8 +55,9 @@ const heroIcons = ['rocket', 'heart', 'cloud', 'camera']
           <svg aria-hidden="true" viewBox="0 0 16 16"><path d="M5.25 3.25h7.5v7.5M12.5 3.5l-9 9M9.75 12.75h-6.5v-6.5" /></svg>
         </a>
         <a href="#packages">Packages</a>
-        <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Use dark theme" aria-pressed="false" title="Toggle theme">
-          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M20.2 15.1A8.4 8.4 0 0 1 8.9 3.8 8.5 8.5 0 1 0 20.2 15Z" /></svg>
+        <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Use dark theme" aria-pressed="false" title="Use dark theme">
+          {nightIcon && <span class="theme-icon theme-icon-night" aria-hidden="true" set:html={inlineSvg(nightIcon)} />}
+          {sunnyIcon && <span class="theme-icon theme-icon-sunny" aria-hidden="true" set:html={inlineSvg(sunnyIcon)} />}
         </button>
       </nav>
 
@@ -354,17 +358,24 @@ const heroIcons = ['rocket', 'heart', 'cloud', 'camera']
 
       const themeToggle = document.getElementById('theme-toggle') as HTMLButtonElement;
       const storedTheme = localStorage.getItem('doodle-theme');
-      if (storedTheme === 'dark') {
-        document.documentElement.dataset.theme = 'dark';
-        themeToggle.setAttribute('aria-pressed', 'true');
-        themeToggle.setAttribute('aria-label', 'Use light theme');
+
+      function syncThemeToggle(theme: 'light' | 'dark'): void {
+        const isDark = theme === 'dark';
+        const label = `Use ${isDark ? 'light' : 'dark'} theme`;
+        themeToggle.setAttribute('aria-pressed', String(isDark));
+        themeToggle.setAttribute('aria-label', label);
+        themeToggle.title = label;
       }
+
+      const initialTheme = storedTheme === 'dark' ? 'dark' : 'light';
+      document.documentElement.dataset.theme = initialTheme;
+      syncThemeToggle(initialTheme);
+
       themeToggle.addEventListener('click', () => {
         const isDark = document.documentElement.dataset.theme === 'dark';
         const next = isDark ? 'light' : 'dark';
         document.documentElement.dataset.theme = next;
-        themeToggle.setAttribute('aria-pressed', String(!isDark));
-        themeToggle.setAttribute('aria-label', `Use ${isDark ? 'dark' : 'light'} theme`);
+        syncThemeToggle(next);
         localStorage.setItem('doodle-theme', next);
       });
 
