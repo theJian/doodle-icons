@@ -28,6 +28,7 @@
     --accent: #145cff;
     --accent-hover: #0048e5;
     --backdrop: rgb(17 17 19 / 0.58);
+    --card-shadow: 0 1px 2px rgb(17 17 19 / 0.06), 0 4px 12px rgb(17 17 19 / 0.08);
     --font-doodle: 'Comic Sans MS', 'Chalkboard SE', 'Bradley Hand', cursive;
     --font-sans: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
@@ -48,6 +49,7 @@
     --accent: #5c8cff;
     --accent-hover: #7aa2ff;
     --backdrop: rgb(0 0 0 / 0.72);
+    --card-shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 4px 12px rgb(0 0 0 / 0.3);
     color-scheme: dark;
   }
 
@@ -517,21 +519,30 @@
     min-inline-size: 0;
     padding: 1rem 0.5rem 0.75rem;
     border: 1px solid var(--rule);
+    border-radius: 1rem;
     background: transparent;
     color: var(--ink);
     cursor: pointer;
-    box-shadow: inset 0 0 0 0 transparent;
-    transition: background 160ms ease, box-shadow 160ms ease;
+    rotate: 0deg;
+    translate: 0;
+    transition: border-color 160ms ease, box-shadow 160ms ease, rotate 160ms var(--ease), translate 160ms var(--ease);
   }
 
   .icon-card[hidden] {
     display: none;
   }
 
-  .icon-card:hover,
+  .icon-card:hover {
+    z-index: 1;
+    border-color: var(--accent);
+    box-shadow: var(--card-shadow);
+    rotate: -0.5deg;
+    translate: 0 -0.125rem;
+  }
+
   .icon-card:focus-visible {
-    background: color-mix(in oklab, var(--accent), transparent 96%);
-    box-shadow: inset 0 0 0 2px var(--accent);
+    border-color: var(--accent);
+    box-shadow: var(--card-shadow);
   }
 
   .icon-card .glyph {
@@ -539,15 +550,6 @@
     place-items: center;
     inline-size: 3rem;
     block-size: 3rem;
-    scale: 1;
-    translate: 0;
-    transition: scale 220ms var(--ease), translate 220ms var(--ease);
-  }
-
-  .icon-card:hover .glyph,
-  .icon-card:focus-visible .glyph {
-    scale: 1.04;
-    translate: 0 -0.2rem;
   }
 
   .icon-card .glyph svg {
@@ -568,18 +570,19 @@
   .card-action {
     position: absolute;
     inset-inline-start: 50%;
-    inset-block-end: -0.95rem;
+    inset-block-end: -0.55rem;
     z-index: 2;
-    min-block-size: 1.9rem;
-    padding: 0.35rem 0.65rem;
-    border-radius: 0.3rem;
+    min-block-size: 1.25rem;
+    padding: 0.1rem 0.4rem;
+    border-radius: 0.25rem;
     background: var(--accent);
     color: #ffffff;
-    font-size: 0.72rem;
+    font-size: 0.6rem;
     font-weight: 700;
+    line-height: 1.2;
     opacity: 0;
     pointer-events: none;
-    translate: -50% 0.4rem;
+    translate: -50% 0.25rem;
     transition: opacity 160ms ease, translate 160ms var(--ease);
     white-space: nowrap;
   }
