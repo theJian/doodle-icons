@@ -473,6 +473,10 @@
     transition: background 160ms ease, box-shadow 160ms ease;
   }
 
+  .icon-card[hidden] {
+    display: none;
+  }
+
   .icon-card:hover {
     z-index: 1;
     background: color-mix(in oklab, var(--accent), transparent 96%);
