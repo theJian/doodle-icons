@@ -384,6 +384,42 @@
     opacity: 1;
   }
 
+  #search::-webkit-search-cancel-button {
+    appearance: none;
+  }
+
+  .search-clear {
+    display: grid;
+    place-items: center;
+    flex: 0 0 1.65rem;
+    inline-size: 1.65rem;
+    block-size: 1.65rem;
+    margin-inline-end: 0.2rem;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+  }
+
+  .search-clear:hover {
+    background: color-mix(in oklab, var(--accent), transparent 90%);
+    color: var(--ink);
+  }
+
+  .search-clear[hidden] {
+    display: none;
+  }
+
+  .search-clear svg {
+    inline-size: 0.9rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-width: 2;
+  }
+
   .search-wrap kbd {
     display: grid;
     place-items: center;
