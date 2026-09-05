@@ -176,29 +176,27 @@ const crossIcon = icons.find((icon) => icon.kebabName === 'cross');
         <div class="copy-grid" id="copy-list">
           <button data-what="svg" type="button">
             <span class="copy-label">SVG</span>
-            {arrowRightIcon && <span class="copy-arrow" aria-hidden="true" set:html={inlineSvg(arrowRightIcon)} />}
           </button>
           <button data-what="react" type="button">
             <span class="copy-label">React</span>
-            {arrowRightIcon && <span class="copy-arrow" aria-hidden="true" set:html={inlineSvg(arrowRightIcon)} />}
           </button>
           <button data-what="vue" type="button">
             <span class="copy-label">Vue</span>
-            {arrowRightIcon && <span class="copy-arrow" aria-hidden="true" set:html={inlineSvg(arrowRightIcon)} />}
           </button>
           <button data-what="rn" type="button">
             <span class="copy-label">React Native</span>
-            {arrowRightIcon && <span class="copy-arrow" aria-hidden="true" set:html={inlineSvg(arrowRightIcon)} />}
           </button>
           <button data-what="flutter" type="button">
             <span class="copy-label">Flutter</span>
-            {arrowRightIcon && <span class="copy-arrow" aria-hidden="true" set:html={inlineSvg(arrowRightIcon)} />}
           </button>
           <a id="download" download="">
             <span>Download</span>
             <svg class="download-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 19h16" /></svg>
           </a>
         </div>
+        <template id="copy-status-arrow">
+          {arrowRightIcon && <span class="copy-arrow" aria-hidden="true" set:html={inlineSvg(arrowRightIcon)} />}
+        </template>
         <p class="copy-status" id="copy-status" role="status" aria-live="polite" aria-atomic="true"></p>
       </div>
     </dialog>
@@ -297,6 +295,7 @@ const crossIcon = icons.find((icon) => icon.kebabName === 'cross');
       const modalMeta = document.getElementById('modal-meta') as HTMLElement;
       const download = document.getElementById('download') as HTMLAnchorElement;
       const copyStatus = document.getElementById('copy-status') as HTMLElement;
+      const copyStatusArrow = document.getElementById('copy-status-arrow') as HTMLTemplateElement;
       let currentCard: HTMLButtonElement | null = null;
       let currentSize = 64;
       let downloadUrl = '';
@@ -370,7 +369,7 @@ const crossIcon = icons.find((icon) => icon.kebabName === 'cross');
           const label = button.querySelector('.copy-label')?.textContent?.trim() ?? 'Icon';
           try {
             await navigator.clipboard.writeText(snippets(currentCard)[button.dataset.what!]);
-            const arrow = button.querySelector('.copy-arrow')?.cloneNode(true);
+            const arrow = copyStatusArrow.content.firstElementChild?.cloneNode(true);
             copyStatus.replaceChildren(
               document.createTextNode(`${label} `),
               ...(arrow ? [arrow] : []),
