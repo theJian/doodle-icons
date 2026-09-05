@@ -567,32 +567,6 @@
     white-space: nowrap;
   }
 
-  .card-action {
-    position: absolute;
-    inset-inline-start: 50%;
-    inset-block-end: -0.55rem;
-    z-index: 2;
-    min-block-size: 1.25rem;
-    padding: 0.1rem 0.4rem;
-    border-radius: 0.25rem;
-    background: var(--accent);
-    color: #ffffff;
-    font-size: 0.6rem;
-    font-weight: 700;
-    line-height: 1.2;
-    opacity: 0;
-    pointer-events: none;
-    translate: -50% 0.25rem;
-    transition: opacity 160ms ease, translate 160ms var(--ease);
-    white-space: nowrap;
-  }
-
-  .icon-card:hover .card-action,
-  .icon-card:focus-visible .card-action {
-    opacity: 1;
-    translate: -50% 0;
-  }
-
   .empty {
     padding-block: 6rem;
     border-block-end: 1px solid var(--rule);
@@ -980,10 +954,6 @@
     font-size: 1rem;
   }
 
-  .card-action {
-    display: none;
-  }
-
   .site-footer {
     align-items: flex-start;
     flex-direction: column;
@@ -1023,7 +993,7 @@
     animation: none;
   }
 
-  :where(.button, .icon-card, .icon-card .glyph, .card-action, .mobile-nav summary span) {
+  :where(.button, .icon-card, .icon-card .glyph, .mobile-nav summary span) {
     transition-duration: 0.01ms;
   }
 }
@@ -1031,7 +1001,6 @@
 @media (forced-colors: active) {
   .button-primary,
   .category.is-active,
-  .card-action,
   .copy-list .copy-primary,
   .tape {
     border: 1px solid ButtonText;
