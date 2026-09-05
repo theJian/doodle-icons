@@ -600,16 +600,15 @@
   }
 
   dialog {
-    inline-size: min(34rem, calc(100vw - 2rem));
+    inline-size: min(26rem, calc(100vw - 2rem));
     max-block-size: calc(100dvh - 2rem);
     padding: 0;
-    border: 2px solid var(--ink);
-    border-radius: 0.25rem;
-    outline: 1px solid var(--ink);
-    outline-offset: 0.25rem;
+    overflow: auto;
+    border: 1px solid var(--rule-strong);
+    border-radius: 1.25rem;
     background: var(--canvas);
     color: var(--ink);
-    box-shadow: 1rem 1rem 0 rgb(17 17 19 / 0.2);
+    box-shadow: var(--card-shadow), 0.3rem 0.3rem 0 color-mix(in oklab, var(--accent), transparent 78%);
   }
 
   dialog::backdrop {
@@ -620,53 +619,47 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    align-items: stretch;
-    padding: 2rem;
-  }
-
-  .tape {
-    position: absolute;
-    inset-block-start: -0.8rem;
-    inset-inline-start: -0.7rem;
-    inline-size: 2.8rem;
-    block-size: 1rem;
-    background: var(--accent);
-    rotate: -42deg;
+    gap: 0.9rem;
+    padding: 1.5rem;
   }
 
   .modal-close {
     position: absolute;
-    inset-block-start: 1rem;
-    inset-inline-end: 1rem;
+    inset-block-start: 0.85rem;
+    inset-inline-end: 0.85rem;
     z-index: 1;
     display: grid;
     place-items: center;
-    min-inline-size: 2.75rem;
-    min-block-size: 2.75rem;
+    inline-size: 2.5rem;
+    block-size: 2.5rem;
     padding: 0;
-    border: 0;
-    background: transparent;
+    border: 1px solid var(--rule);
+    border-radius: 50%;
+    background: var(--canvas);
     color: var(--ink);
     cursor: pointer;
+    transition: border-color 160ms ease, color 160ms ease, rotate 160ms var(--ease);
   }
 
   .modal-close:hover {
-    rotate: 4deg;
+    border-color: var(--accent);
+    color: var(--accent);
+    rotate: 7deg;
   }
 
   .modal-close svg {
-    inline-size: 1.3rem;
-    fill: none;
-    stroke: currentColor;
-    stroke-linecap: round;
-    stroke-width: 1.8;
+    inline-size: 0.95rem;
+    block-size: 0.95rem;
   }
 
   .preview {
     display: grid;
     place-items: center;
-    min-block-size: 10.5rem;
-    border-block-end: 1px solid var(--rule);
+    min-block-size: 9rem;
+    padding: 1.5rem;
+    border: 1px dashed var(--rule-strong);
+    border-radius: 1rem;
+    background: color-mix(in oklab, var(--accent), transparent 97%);
   }
 
   .preview svg {
@@ -674,98 +667,103 @@
   }
 
   #modal-name {
-    margin-block-start: 1rem;
-    font-family: var(--font-mono);
-    font-size: 1.6rem;
-    font-weight: 500;
+    font-family: var(--font-doodle);
+    font-size: 1.35rem;
+    font-weight: 700;
     line-height: 1.2;
-    text-align: center;
+    rotate: -0.35deg;
   }
 
   .meta {
-    margin-block-start: 0.5rem;
     color: var(--muted);
     font-family: var(--font-mono);
     font-size: 0.75rem;
-    text-align: center;
   }
 
   .sizes {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    max-inline-size: 19rem;
-    margin: 1.25rem auto 0;
+    display: flex;
+    justify-content: center;
+    gap: 0.4rem;
   }
 
   .sizes button {
-    min-block-size: 2.75rem;
-    border: 1px solid var(--rule-strong);
+    padding: 0.2rem 0.8rem;
+    border: 1px solid var(--rule);
+    border-radius: 999px;
     background: transparent;
-    color: var(--ink);
+    color: var(--muted);
     cursor: pointer;
     font-family: var(--font-mono);
     font-size: 0.8rem;
-  }
-
-  .sizes button + button {
-    border-inline-start: 0;
+    transition: border-color 160ms ease, background-color 160ms ease, color 160ms ease;
   }
 
   .sizes button.is-active {
-    position: relative;
-    z-index: 1;
     border-color: var(--accent);
-    box-shadow: inset 0 0 0 1px var(--accent);
+    background: color-mix(in oklab, var(--accent), transparent 90%);
     color: var(--accent);
   }
 
-  .copy-list {
-    display: flex;
-    flex-direction: column;
-    margin-block-start: 1.25rem;
-    border-block-start: 1px solid var(--rule);
+  .copy-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.5rem;
   }
 
-  .copy-list button,
-  .copy-list a {
+  .copy-grid button,
+  .copy-grid a {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    min-block-size: 3rem;
-    padding-inline: 0.75rem;
-    border: 0;
-    border-block-end: 1px solid var(--rule);
-    background: transparent;
+    justify-content: center;
+    gap: 0.4rem;
+    min-block-size: 2.5rem;
+    min-inline-size: 0;
+    padding: 0.5rem;
+    border: 1px solid var(--rule);
+    border-radius: 0.65rem;
+    background: color-mix(in oklab, var(--rule), transparent 78%);
     color: var(--ink);
     cursor: pointer;
-    font-size: 0.9rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    line-height: 1.15;
+    text-align: center;
     text-decoration: none;
+    transition: border-color 160ms ease, background-color 160ms ease, color 160ms ease, rotate 160ms var(--ease), translate 160ms var(--ease);
   }
 
-  .copy-list button:hover,
-  .copy-list a:hover {
-    background: color-mix(in oklab, var(--accent), transparent 95%);
+  .copy-grid button:hover,
+  .copy-grid a:hover {
+    border-color: var(--accent);
+    background: color-mix(in oklab, var(--accent), transparent 92%);
+    color: var(--accent);
+    text-decoration: none;
+    translate: 0 -0.1rem;
   }
 
-  .copy-list .copy-primary {
-    align-self: flex-start;
-    justify-content: center;
-    min-block-size: 2.75rem;
-    margin-block: 0.85rem;
-    border: 0;
-    border-radius: 0.3rem;
-    background: var(--accent);
-    color: #ffffff;
-    font-weight: 700;
+  .copy-grid > :nth-child(odd):hover {
+    rotate: -0.7deg;
   }
 
-  .copy-list .copy-primary:hover {
-    background: var(--accent-hover);
+  .copy-grid > :nth-child(even):hover {
+    rotate: 0.7deg;
   }
 
-  .copy-list svg {
-    inline-size: 1.2rem;
+  .copy-arrow {
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    color: var(--accent);
+  }
+
+  .copy-arrow svg {
+    inline-size: 0.9rem;
+    block-size: 0.55rem;
+  }
+
+  .download-icon {
+    inline-size: 0.95rem;
+    block-size: 0.95rem;
     flex: 0 0 auto;
     fill: none;
     stroke: currentColor;
@@ -774,25 +772,16 @@
     stroke-width: 1.7;
   }
 
-  #download {
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    justify-content: initial;
-  }
-
-  #download-name {
-    color: var(--muted);
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-  }
-
   .copy-status {
-    min-block-size: 1.25rem;
-    margin-block-start: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    min-block-size: 1.2rem;
     color: var(--accent);
-    font-size: 0.8rem;
-    font-weight: 650;
-    text-align: end;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-align: center;
   }
 
   @keyframes float {
@@ -973,14 +962,20 @@
   }
 }
 
+@media (max-width: 26rem) {
+  .copy-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 @media (pointer: coarse) {
   .category,
   .theme-toggle,
   .mobile-nav summary,
   .modal-close,
   .sizes button,
-  .copy-list button,
-  .copy-list a {
+  .copy-grid button,
+  .copy-grid a {
     min-block-size: 3rem;
   }
 }
@@ -994,7 +989,7 @@
     animation: none;
   }
 
-  :where(.button, .icon-card, .icon-card .glyph, .mobile-nav summary span) {
+  :where(.button, .icon-card, .icon-card .glyph, .mobile-nav summary span, .modal-close, .copy-grid button, .copy-grid a) {
     transition-duration: 0.01ms;
   }
 }
@@ -1002,8 +997,8 @@
 @media (forced-colors: active) {
   .button-primary,
   .category.is-active,
-  .copy-list .copy-primary,
-  .tape {
+  .copy-grid button,
+  .copy-grid a {
     border: 1px solid ButtonText;
   }
 }
