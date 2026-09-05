@@ -570,7 +570,6 @@
 
   .empty {
     padding-block: 6rem;
-    border-block-end: 1px solid var(--rule);
     color: var(--muted);
     text-align: center;
   }
