@@ -536,7 +536,7 @@
     z-index: 1;
     border-color: var(--accent);
     box-shadow: var(--card-shadow);
-    rotate: -0.5deg;
+    rotate: -1deg;
     translate: 0 -0.125rem;
   }
 
