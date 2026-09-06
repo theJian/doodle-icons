@@ -48,31 +48,29 @@ const crossIcon = icons.find((icon) => icon.kebabName === 'cross');
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✏️</text></svg>" />
   </head>
   <body>
-    <header class="site-header">
-      <a class="logo" href={import.meta.env.BASE_URL} aria-label="doodle-icons home">doodle<span>-icons</span></a>
+    <div class="header-slot">
+      <header class="site-header" id="context-header">
+        <div class="header-inner">
+          <a class="logo" href={import.meta.env.BASE_URL} aria-label="doodle-icons home">DOODLE <span>ICONS</span></a>
 
-      <nav class="header-nav" aria-label="Primary navigation">
-        <a href="https://github.com/theJian/doodle-icons">
-          GitHub
-          <svg aria-hidden="true" viewBox="0 0 16 16"><path d="M5.25 3.25h7.5v7.5M12.5 3.5l-9 9M9.75 12.75h-6.5v-6.5" /></svg>
-        </a>
-        <a href="#packages">Packages</a>
-        <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Use dark theme" aria-pressed="false" title="Use dark theme">
-          {nightIcon && <span class="theme-icon theme-icon-night" aria-hidden="true" set:html={inlineSvg(nightIcon)} />}
-          {sunnyIcon && <span class="theme-icon theme-icon-sunny" aria-hidden="true" set:html={inlineSvg(sunnyIcon)} />}
-        </button>
-      </nav>
+          <div class="header-search" role="search">
+            <label class="visually-hidden" for="header-search">Search icons</label>
+            <svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.8" /><path d="m16 16 5 5" /></svg>
+            <input id="header-search" type="search" placeholder="Search icons…" autocomplete="off" spellcheck="false" />
+          </div>
 
-      <details class="mobile-nav">
-        <summary aria-label="Open navigation">
-          <span></span><span></span><span></span>
-        </summary>
-        <div>
-          <a href="https://github.com/theJian/doodle-icons">GitHub</a>
-          <a href="#packages">Packages</a>
+          <a class="header-github" href="https://github.com/theJian/doodle-icons">
+            <span class="header-github-label">GitHub</span>
+            <svg aria-hidden="true" viewBox="0 0 16 16"><path d="M5.25 3.25h7.5v7.5M12.5 3.5l-9 9M9.75 12.75h-6.5v-6.5" /></svg>
+          </a>
+
+          <button class="theme-toggle" data-theme-toggle type="button" aria-label="Use dark theme" aria-pressed="false" title="Use dark theme">
+            {nightIcon && <span class="theme-icon theme-icon-night" aria-hidden="true" set:html={inlineSvg(nightIcon)} />}
+            {sunnyIcon && <span class="theme-icon theme-icon-sunny" aria-hidden="true" set:html={inlineSvg(sunnyIcon)} />}
+          </button>
         </div>
-      </details>
-    </header>
+      </header>
+    </div>
 
     <main>
       <section class="hero" aria-labelledby="hero-title">
@@ -209,6 +207,9 @@ const crossIcon = icons.find((icon) => icon.kebabName === 'cross');
       const grid = document.getElementById('grid') as HTMLElement;
       const cards = [...grid.querySelectorAll<HTMLButtonElement>('.icon-card')];
       const search = document.getElementById('search') as HTMLInputElement;
+      const searchWrap = search.closest('.search-wrap') as HTMLElement;
+      const contextHeader = document.getElementById('context-header') as HTMLElement;
+      const headerSearch = document.getElementById('header-search') as HTMLInputElement;
       const searchClear = document.getElementById('search-clear') as HTMLButtonElement;
       const countEl = document.getElementById('count') as HTMLElement;
       const emptyEl = document.getElementById('empty') as HTMLElement;
@@ -226,6 +227,7 @@ const crossIcon = icons.find((icon) => icon.kebabName === 'cross');
 
       let activeCategory = '';
       let activeQuery = '';
+      let mainSearchIsPast = false;
 
       function syncSearchClear(): void {
         searchClear.hidden = search.value.length === 0;
@@ -257,17 +259,19 @@ const crossIcon = icons.find((icon) => icon.kebabName === 'cross');
         history.replaceState(null, '', hash.toString() ? `#${hash}` : location.pathname);
       }
 
-      search.addEventListener('input', () => {
-        activeQuery = search.value.trim().toLowerCase();
+      function updateQuery(value: string): void {
+        search.value = value;
+        headerSearch.value = value;
+        activeQuery = value.trim().toLowerCase();
         syncSearchClear();
         applyFilters();
-      });
+      }
+
+      search.addEventListener('input', () => updateQuery(search.value));
+      headerSearch.addEventListener('input', () => updateQuery(headerSearch.value));
 
       searchClear.addEventListener('click', () => {
-        search.value = '';
-        activeQuery = '';
-        syncSearchClear();
-        applyFilters();
+        updateQuery('');
         search.focus();
       });
 
@@ -284,11 +288,52 @@ const crossIcon = icons.find((icon) => icon.kebabName === 'cross');
       }
 
       document.addEventListener('keydown', (event) => {
-        if (event.key === '/' && document.activeElement !== search) {
+        const activeElement = document.activeElement;
+        const isTyping = activeElement instanceof HTMLInputElement || activeElement instanceof HTMLTextAreaElement;
+        if (event.key === '/' && !isTyping) {
           event.preventDefault();
-          search.focus();
+          (contextHeader.classList.contains('is-visible') ? headerSearch : search).focus();
         }
       });
+
+      function transferSearchFocus(from: HTMLInputElement, to: HTMLInputElement): void {
+        if (document.activeElement !== from) return;
+
+        const selectionStart = from.selectionStart;
+        const selectionEnd = from.selectionEnd;
+        const selectionDirection = from.selectionDirection;
+        const inputScroll = from.scrollLeft;
+
+        to.focus({ preventScroll: true });
+        if (selectionStart !== null && selectionEnd !== null) {
+          to.setSelectionRange(selectionStart, selectionEnd, selectionDirection ?? 'none');
+        }
+        to.scrollLeft = inputScroll;
+      }
+
+      function setContextHeaderVisible(visible: boolean): void {
+        const isVisible = contextHeader.classList.contains('is-visible');
+        if (isVisible === visible) return;
+
+        if (visible) {
+          contextHeader.classList.add('is-visible');
+          transferSearchFocus(search, headerSearch);
+          return;
+        }
+
+        transferSearchFocus(headerSearch, search);
+        contextHeader.classList.remove('is-visible');
+      }
+
+      function syncContextHeaderVisibility(): void {
+        setContextHeaderVisible(mainSearchIsPast);
+      }
+
+      const searchObserver = new IntersectionObserver(([entry]) => {
+        mainSearchIsPast = !entry.isIntersecting && entry.boundingClientRect.bottom <= 0;
+        syncContextHeaderVisibility();
+      });
+      searchObserver.observe(searchWrap);
 
       const modal = document.getElementById('modal') as HTMLDialogElement;
       const preview = document.getElementById('preview') as HTMLElement;
@@ -382,34 +427,39 @@ const crossIcon = icons.find((icon) => icon.kebabName === 'cross');
         }),
       );
 
-      const themeToggle = document.getElementById('theme-toggle') as HTMLButtonElement;
+      const themeToggles = [...document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]')];
       const storedTheme = localStorage.getItem('doodle-theme');
 
       function syncThemeToggle(theme: 'light' | 'dark'): void {
         const isDark = theme === 'dark';
         const label = `Use ${isDark ? 'light' : 'dark'} theme`;
-        themeToggle.setAttribute('aria-pressed', String(isDark));
-        themeToggle.setAttribute('aria-label', label);
-        themeToggle.title = label;
+        for (const themeToggle of themeToggles) {
+          themeToggle.setAttribute('aria-pressed', String(isDark));
+          themeToggle.setAttribute('aria-label', label);
+          themeToggle.title = label;
+        }
       }
 
       const initialTheme = storedTheme === 'dark' ? 'dark' : 'light';
       document.documentElement.dataset.theme = initialTheme;
       syncThemeToggle(initialTheme);
 
-      themeToggle.addEventListener('click', () => {
-        const isDark = document.documentElement.dataset.theme === 'dark';
-        const next = isDark ? 'light' : 'dark';
-        document.documentElement.dataset.theme = next;
-        syncThemeToggle(next);
-        localStorage.setItem('doodle-theme', next);
-      });
+      for (const themeToggle of themeToggles) {
+        themeToggle.addEventListener('click', () => {
+          const isDark = document.documentElement.dataset.theme === 'dark';
+          const next = isDark ? 'light' : 'dark';
+          document.documentElement.dataset.theme = next;
+          syncThemeToggle(next);
+          localStorage.setItem('doodle-theme', next);
+        });
+      }
 
       const params = new URLSearchParams(location.hash.slice(1));
       const query = params.get('q');
       const category = params.get('category');
       if (query) {
         search.value = query;
+        headerSearch.value = query;
         activeQuery = query.toLowerCase();
       }
       if (category) {

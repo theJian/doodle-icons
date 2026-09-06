@@ -90,33 +90,77 @@
 }
 
 @layer components {
-  :where(.site-header, .hero, .catalog, .site-footer) {
+  :where(.hero, .catalog, .site-footer) {
     max-inline-size: var(--content-max);
     margin-inline: auto;
   }
 
+  .header-slot {
+    min-block-size: 4.75rem;
+  }
+
   .site-header {
-    position: sticky;
-    inset-block-start: 0;
+    position: relative;
     z-index: 20;
+    inline-size: min(calc(100% - (var(--content-gutter) * 2)), var(--content-max));
+    margin-inline: auto;
+    border: 1px solid transparent;
+    border-radius: 1rem;
+    background: transparent;
+    box-shadow: 0 0.35rem 1.25rem transparent;
+    pointer-events: none;
+    transition: border-color 180ms ease, background-color 180ms ease, box-shadow 220ms var(--ease);
+  }
+
+  .site-header.is-visible {
+    position: fixed;
+    inset-block-start: 0.75rem;
+    inset-inline-start: 50%;
+    margin-inline: 0;
+    border-color: var(--rule);
+    background: var(--canvas);
+    box-shadow: 0 0.35rem 1.25rem rgb(17 17 19 / 0.1);
+    translate: -50% 0;
+  }
+
+  :root[data-theme='dark'] .site-header.is-visible {
+    box-shadow: 0 0.35rem 1.25rem rgb(0 0 0 / 0.38);
+  }
+
+  .header-inner {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-end;
+    gap: 0.75rem;
     min-block-size: 4rem;
-    padding-inline: var(--content-gutter);
-    border-block-end: 1px solid var(--rule);
-    background: var(--canvas);
+    padding-inline: 0.75rem;
+  }
+
+  .site-header :where(a, button, input) {
+    pointer-events: auto;
   }
 
   .logo {
+    flex: 0 0 auto;
     color: var(--ink);
     font-family: var(--font-doodle);
-    font-size: 1.75rem;
+    font-size: 1.2rem;
     font-weight: 700;
     letter-spacing: -0.02em;
     text-decoration: none;
+    white-space: nowrap;
     rotate: -1.5deg;
-    transition: rotate 160ms var(--ease);
+    opacity: 0;
+    visibility: hidden;
+    translate: 0 -0.3rem;
+    transition: opacity 140ms ease, rotate 160ms var(--ease), translate 180ms var(--ease), visibility 0s linear 180ms;
+  }
+
+  .site-header.is-visible .logo {
+    opacity: 1;
+    visibility: visible;
+    translate: 0;
+    transition-delay: 40ms, 0s, 40ms, 0s;
   }
 
   .logo span {
@@ -127,28 +171,78 @@
     rotate: 1deg;
   }
 
-  .header-nav {
+  .header-search {
     display: flex;
     align-items: center;
-    gap: clamp(1.25rem, 3vw, 2.5rem);
+    flex: 1 1 24rem;
+    min-inline-size: 8rem;
+    max-inline-size: 28rem;
+    min-block-size: 2.5rem;
+    margin-inline: auto;
+    border: 1px solid var(--rule-strong);
+    border-radius: 999px;
+    background: var(--canvas);
+    opacity: 0;
+    visibility: hidden;
+    translate: 0 -0.3rem;
+    transition: border-color 160ms ease, box-shadow 160ms ease, opacity 140ms ease, translate 180ms var(--ease), visibility 0s linear 180ms;
   }
 
-  .header-nav a {
+  .site-header.is-visible .header-search {
+    opacity: 1;
+    visibility: visible;
+    translate: 0;
+    transition-delay: 0s, 0s, 60ms, 60ms, 0s;
+  }
+
+  .header-search:focus-within {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 0.1875rem color-mix(in oklab, var(--accent), transparent 82%);
+  }
+
+  .header-search > svg {
+    inline-size: 1rem;
+    margin-inline-start: 0.8rem;
+    fill: none;
+    stroke: var(--muted);
+    stroke-linecap: round;
+    stroke-width: 1.7;
+  }
+
+  #header-search {
+    min-inline-size: 0;
+    flex: 1;
+    align-self: stretch;
+    padding-inline: 0.65rem 0.85rem;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: var(--ink);
+    font-size: 0.88rem;
+  }
+
+  #header-search::placeholder {
+    color: var(--muted);
+    opacity: 1;
+  }
+
+  .header-github {
     display: inline-flex;
     align-items: center;
     gap: 0.35rem;
     min-block-size: 2.75rem;
     color: var(--ink);
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     font-weight: 600;
     text-decoration: none;
+    white-space: nowrap;
   }
 
-  .header-nav a:hover {
+  .header-github:hover {
     text-decoration: underline;
   }
 
-  .header-nav a svg {
+  .header-github svg {
     inline-size: 0.9rem;
     fill: none;
     stroke: currentColor;
@@ -195,17 +289,12 @@
     block-size: 1.4rem;
   }
 
-  .mobile-nav {
-    display: none;
-    position: relative;
-  }
-
   .hero {
     position: relative;
     display: grid;
     place-items: center;
     min-block-size: auto;
-    padding: clamp(4rem, 6vw, 5.5rem) var(--content-gutter) clamp(3.25rem, 5vw, 4.5rem);
+    padding: clamp(2rem, 3vw, 2.75rem) var(--content-gutter) clamp(3.25rem, 5vw, 4.5rem);
     overflow: hidden;
   }
 
@@ -820,80 +909,70 @@
 }
 
 @media (max-width: 44rem) {
-  .site-header {
+  .header-slot {
     min-block-size: 4rem;
   }
 
-  .header-nav {
-    display: none;
+  .site-header {
+    inline-size: calc(100% - 1rem);
+    border-radius: 0.85rem;
   }
 
-  .mobile-nav {
-    display: block;
+  .site-header.is-visible {
+    inset-block-start: 0.5rem;
   }
 
-  .mobile-nav summary {
-    display: grid;
-    align-content: center;
-    gap: 0.28rem;
-    min-inline-size: 3rem;
-    min-block-size: 3rem;
-    padding: 0.6rem;
-    cursor: pointer;
-    list-style: none;
+  .header-inner {
+    gap: 0.55rem;
+    min-block-size: 3.5rem;
+    padding-inline: 0.5rem;
   }
 
-  .mobile-nav summary::-webkit-details-marker {
-    display: none;
+  .site-header .logo {
+    font-size: 0.9rem;
   }
 
-  .mobile-nav summary span {
-    display: block;
-    inline-size: 1.7rem;
-    block-size: 2px;
-    border-radius: 999px;
-    background: var(--ink);
-    transition: rotate 160ms ease, translate 160ms ease, opacity 160ms ease;
+  .header-search {
+    flex-basis: auto;
+    min-inline-size: 5rem;
+    min-block-size: 2.4rem;
   }
 
-  .mobile-nav[open] summary span:first-child {
-    translate: 0 0.38rem;
-    rotate: 45deg;
+  .header-search > svg {
+    inline-size: 0.9rem;
+    margin-inline-start: 0.65rem;
   }
 
-  .mobile-nav[open] summary span:nth-child(2) {
-    opacity: 0;
+  #header-search {
+    padding-inline: 0.5rem 0.65rem;
+    font-size: 0.82rem;
   }
 
-  .mobile-nav[open] summary span:last-child {
-    translate: 0 -0.38rem;
-    rotate: -45deg;
+  .header-github {
+    justify-content: center;
+    min-inline-size: 2.5rem;
   }
 
-  .mobile-nav > div {
+  .header-github-label {
     position: absolute;
-    inset-block-start: calc(100% + 0.65rem);
-    inset-inline-end: 0;
-    display: grid;
-    min-inline-size: 10rem;
-    border: 1px solid var(--ink);
-    background: var(--canvas);
-    box-shadow: 0.3rem 0.3rem 0 var(--accent);
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
   }
 
-  .mobile-nav a {
-    min-block-size: 3rem;
-    padding: 0.8rem 1rem;
-    text-decoration: none;
+  .header-github svg {
+    inline-size: 1.05rem;
   }
 
-  .mobile-nav a + a {
-    border-block-start: 1px solid var(--rule);
+  .site-header .theme-toggle {
+    min-inline-size: 2.5rem;
+    min-block-size: 2.5rem;
   }
 
   .hero {
     min-block-size: auto;
-    padding-block: 3rem 2.5rem;
+    padding-block: 1.5rem 2.5rem;
   }
 
   .hero h1 {
@@ -962,7 +1041,6 @@
 @media (pointer: coarse) {
   .category,
   .theme-toggle,
-  .mobile-nav summary,
   .modal-close,
   .sizes button,
   .copy-grid button,
@@ -980,7 +1058,7 @@
     animation: none;
   }
 
-  :where(.button, .icon-card, .icon-card .glyph, .mobile-nav summary span, .modal-close, .copy-grid button, .copy-grid a) {
+  :where(.site-header, .site-header .logo, .site-header .header-search, .button, .icon-card, .icon-card .glyph, .modal-close, .copy-grid button, .copy-grid a) {
     transition-duration: 0.01ms;
   }
 }
