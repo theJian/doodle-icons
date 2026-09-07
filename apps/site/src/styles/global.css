@@ -701,6 +701,19 @@
     text-decoration: underline;
   }
 
+  .footer-code-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem 1.25rem;
+    inline-size: 100%;
+  }
+
+  .footer-links {
+    margin-inline-start: auto;
+    white-space: nowrap;
+  }
+
   dialog {
     inline-size: min(26rem, calc(100vw - 2rem));
     max-block-size: calc(100dvh - 2rem);
@@ -1056,6 +1069,10 @@
 
   #search {
     font-size: 1rem;
+  }
+
+  .footer-code-row {
+    flex-wrap: wrap;
   }
 
   .modal-inner {
