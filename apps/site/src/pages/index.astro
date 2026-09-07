@@ -30,8 +30,13 @@ const heroIcons = ['rocket', 'heart', 'cloud', 'camera']
 
 const nightIcon = icons.find((icon) => icon.kebabName === 'night');
 const sunnyIcon = icons.find((icon) => icon.kebabName === 'sunny');
-const arrowRightIcon = icons.find((icon) => icon.kebabName === 'arrow-right');
 const crossIcon = icons.find((icon) => icon.kebabName === 'cross');
+
+const frameworkLogos = {
+  react: `<svg viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="12" r="1.55" fill="currentColor"/><ellipse cx="12" cy="12" rx="9.5" ry="3.9" fill="none" stroke="currentColor" stroke-width="1.35"/><ellipse cx="12" cy="12" rx="9.5" ry="3.9" fill="none" stroke="currentColor" stroke-width="1.35" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="9.5" ry="3.9" fill="none" stroke="currentColor" stroke-width="1.35" transform="rotate(120 12 12)"/></svg>`,
+  vue: `<svg viewBox="0 0 24 24" focusable="false"><path fill="currentColor" fill-rule="evenodd" d="M1.5 3h5L12 12.5 17.5 3h5L12 21 1.5 3Zm7.8 0L12 7.7 14.7 3H9.3Z"/></svg>`,
+  flutter: `<svg viewBox="0 0 24 24" focusable="false"><path fill="currentColor" d="M14.2 1.5 3.4 12.3l3.35 3.35L20.9 1.5h-6.7Zm0 9.6-5.75 5.75 3.35 3.35 3.35-3.35 5.75-5.75h-6.7Z"/><path fill="currentColor" opacity=".55" d="m11.8 20.2 2.3 2.3h6.8l-5.75-5.65-3.35 3.35Z"/></svg>`,
+};
 ---
 
 <!doctype html>
@@ -172,27 +177,41 @@ const crossIcon = icons.find((icon) => icon.kebabName === 'cross');
         <div class="copy-grid" id="copy-list">
           <button data-what="svg" type="button">
             <span class="copy-label">SVG</span>
+            <span class="copy-confirmation" aria-hidden="true">Copied</span>
           </button>
           <button data-what="react" type="button">
-            <span class="copy-label">React</span>
+            <span class="copy-label">
+              <span class="framework-logo" aria-hidden="true" set:html={frameworkLogos.react} />
+              <span>React</span>
+            </span>
+            <span class="copy-confirmation" aria-hidden="true">Copied</span>
           </button>
           <button data-what="vue" type="button">
-            <span class="copy-label">Vue</span>
+            <span class="copy-label">
+              <span class="framework-logo" aria-hidden="true" set:html={frameworkLogos.vue} />
+              <span>Vue</span>
+            </span>
+            <span class="copy-confirmation" aria-hidden="true">Copied</span>
           </button>
           <button data-what="rn" type="button">
-            <span class="copy-label">React Native</span>
+            <span class="copy-label">
+              <span class="framework-logo" aria-hidden="true" set:html={frameworkLogos.react} />
+              <span>React Native</span>
+            </span>
+            <span class="copy-confirmation" aria-hidden="true">Copied</span>
           </button>
           <button data-what="flutter" type="button">
-            <span class="copy-label">Flutter</span>
+            <span class="copy-label">
+              <span class="framework-logo" aria-hidden="true" set:html={frameworkLogos.flutter} />
+              <span>Flutter</span>
+            </span>
+            <span class="copy-confirmation" aria-hidden="true">Copied</span>
           </button>
           <a id="download" download="">
             <span>Download</span>
           </a>
         </div>
-        <template id="copy-status-arrow">
-          {arrowRightIcon && <span class="copy-arrow" aria-hidden="true" set:html={inlineSvg(arrowRightIcon)} />}
-        </template>
-        <p class="copy-status" id="copy-status" role="status" aria-live="polite" aria-atomic="true"></p>
+        <p class="visually-hidden" id="copy-status" role="status" aria-live="polite" aria-atomic="true"></p>
       </div>
     </dialog>
 
@@ -336,10 +355,26 @@ const crossIcon = icons.find((icon) => icon.kebabName === 'cross');
       const modalName = document.getElementById('modal-name') as HTMLElement;
       const download = document.getElementById('download') as HTMLAnchorElement;
       const copyStatus = document.getElementById('copy-status') as HTMLElement;
-      const copyStatusArrow = document.getElementById('copy-status-arrow') as HTMLTemplateElement;
+      const copyButtons = [...document.querySelectorAll<HTMLButtonElement>('#copy-list button[data-what]')];
       let currentCard: HTMLButtonElement | null = null;
       let currentSize = 64;
       let downloadUrl = '';
+      let copyFeedbackTimer: number | undefined;
+
+      function clearCopyFeedback(): void {
+        if (copyFeedbackTimer !== undefined) window.clearTimeout(copyFeedbackTimer);
+        copyFeedbackTimer = undefined;
+        copyButtons.forEach((button) => button.classList.remove('is-copied'));
+        copyStatus.textContent = '';
+      }
+
+      function showCopyFeedback(button: HTMLButtonElement, label: string): void {
+        clearCopyFeedback();
+        void button.offsetWidth;
+        button.classList.add('is-copied');
+        copyStatus.textContent = `${label} copied to clipboard.`;
+        copyFeedbackTimer = window.setTimeout(clearCopyFeedback, 3000);
+      }
 
       function standaloneSvg(card: HTMLButtonElement, fill: string): string {
         const svg = card.querySelector('svg')!.cloneNode(true) as SVGElement;
@@ -370,7 +405,7 @@ const crossIcon = icons.find((icon) => icon.kebabName === 'cross');
 
       function openModal(card: HTMLButtonElement): void {
         currentCard = card;
-        copyStatus.textContent = '';
+        clearCopyFeedback();
         modalName.textContent = card.dataset.name!;
         preview.replaceChildren(card.querySelector('svg')!.cloneNode(true));
         applySize();
@@ -384,6 +419,7 @@ const crossIcon = icons.find((icon) => icon.kebabName === 'cross');
 
       cards.forEach((card) => card.addEventListener('click', () => openModal(card)));
       document.getElementById('modal-close')!.addEventListener('click', () => modal.close());
+      modal.addEventListener('close', clearCopyFeedback);
       modal.addEventListener('click', (event) => {
         if (event.target !== modal) return;
         const bounds = modal.getBoundingClientRect();
@@ -403,19 +439,15 @@ const crossIcon = icons.find((icon) => icon.kebabName === 'cross');
         }),
       );
 
-      document.querySelectorAll<HTMLButtonElement>('#copy-list button[data-what]').forEach((button) =>
+      copyButtons.forEach((button) =>
         button.addEventListener('click', async () => {
           if (!currentCard) return;
           const label = button.querySelector('.copy-label')?.textContent?.trim() ?? 'Icon';
           try {
             await navigator.clipboard.writeText(snippets(currentCard)[button.dataset.what!]);
-            const arrow = copyStatusArrow.content.firstElementChild?.cloneNode(true);
-            copyStatus.replaceChildren(
-              document.createTextNode(`${label} `),
-              ...(arrow ? [arrow] : []),
-              document.createTextNode(' copied to clipboard.'),
-            );
+            showCopyFeedback(button, label);
           } catch {
+            clearCopyFeedback();
             copyStatus.textContent = `Could not copy ${label}.`;
           }
         }),

@@ -38,7 +38,7 @@
     --content-max: 72rem;
     --header-control-size: 3rem;
     --search-block-size: 3.25rem;
-    --search-max: 38rem;
+    --search-max: 36rem;
     --ease: cubic-bezier(0.22, 1, 0.36, 1);
     color-scheme: light;
     font-family: var(--font-sans);
@@ -184,7 +184,7 @@
     flex: 1 1 24rem;
     min-inline-size: 8rem;
     max-inline-size: var(--search-max);
-    min-block-size: var(--header-control-size);
+    min-block-size: var(--search-block-size);
     margin-inline: auto;
     border: 1px solid var(--rule-strong);
     border-radius: 999px;
@@ -239,20 +239,24 @@
     min-inline-size: var(--header-control-size);
     min-block-size: var(--header-control-size);
     padding: 0;
-    border: 1px solid transparent;
+    border: 0;
     border-radius: 50%;
     background: transparent;
     color: var(--ink);
     text-decoration: none;
   }
 
-  .header-github:hover {
-    border-color: var(--rule-strong);
+  .header-github svg {
+    inline-size: 1.8rem;
+    fill: currentColor;
+    rotate: 0deg;
+    scale: 1;
+    transition: rotate 180ms var(--ease), scale 180ms var(--ease);
   }
 
-  .header-github svg {
-    inline-size: 1.5rem;
-    fill: currentColor;
+  .header-github:hover svg {
+    rotate: -7deg;
+    scale: 1.08;
   }
 
   .theme-toggle {
@@ -261,21 +265,25 @@
     min-inline-size: var(--header-control-size);
     min-block-size: var(--header-control-size);
     padding: 0;
-    border: 1px solid transparent;
+    border: 0;
     border-radius: 50%;
     background: transparent;
     color: var(--ink);
     cursor: pointer;
   }
 
-  .theme-toggle:hover {
-    border-color: var(--rule-strong);
-  }
-
   .theme-icon {
     display: grid;
     grid-area: 1 / 1;
     place-items: center;
+    rotate: 0deg;
+    scale: 1;
+    transition: rotate 180ms var(--ease), scale 180ms var(--ease);
+  }
+
+  .theme-toggle:hover .theme-icon {
+    rotate: 7deg;
+    scale: 1.08;
   }
 
   .theme-icon-sunny,
@@ -709,7 +717,7 @@
     display: flex;
     flex-direction: column;
     gap: 0.9rem;
-    padding: 1.5rem 1.5rem 2rem;
+    padding: 1.5rem;
   }
 
   .modal-close {
@@ -722,16 +730,17 @@
     inline-size: 2.5rem;
     block-size: 2.5rem;
     padding: 0;
-    border: 1px solid var(--rule);
+    border: 1px solid var(--rule-strong);
     border-radius: 50%;
-    background: var(--canvas);
+    background: var(--popup-action-surface);
     color: var(--ink);
     cursor: pointer;
-    transition: border-color 160ms ease, color 160ms ease, rotate 160ms var(--ease);
+    transition: border-color 160ms ease, background-color 160ms ease, color 160ms ease, rotate 160ms var(--ease);
   }
 
   .modal-close:hover {
     border-color: var(--accent);
+    background: var(--popup-action-surface-hover);
     color: var(--accent);
     rotate: 7deg;
   }
@@ -823,6 +832,11 @@
     translate: 0 -0.1rem;
   }
 
+  .copy-grid button {
+    display: grid;
+    overflow: hidden;
+  }
+
   .copy-grid > :nth-child(odd):hover {
     rotate: -0.7deg;
   }
@@ -831,31 +845,82 @@
     rotate: 0.7deg;
   }
 
-  .copy-arrow {
+  .copy-label,
+  .copy-confirmation {
+    grid-area: 1 / 1;
+    opacity: 1;
+    translate: 0;
+  }
+
+  .copy-label {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3rem;
+    white-space: nowrap;
+  }
+
+  .framework-logo {
     display: grid;
     place-items: center;
     flex: 0 0 auto;
-    color: var(--accent);
-  }
-
-  .copy-arrow svg {
     inline-size: 0.9rem;
-    block-size: 0.55rem;
+    block-size: 0.9rem;
   }
 
-  .copy-status {
-    position: absolute;
-    inset-block-end: 0.25rem;
-    inset-inline: 1.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.35rem;
-    min-block-size: 1.2rem;
-    color: var(--accent);
-    font-size: 0.78rem;
-    font-weight: 700;
-    text-align: center;
+  .framework-logo svg {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+  }
+
+  .copy-confirmation {
+    opacity: 0;
+    translate: 0 0.55rem;
+  }
+
+  .copy-grid button.is-copied .copy-label {
+    animation: copy-label-cycle 3s var(--ease) both;
+  }
+
+  .copy-grid button.is-copied .copy-confirmation {
+    animation: copy-confirmation-cycle 3s var(--ease) both;
+  }
+
+  @keyframes copy-label-cycle {
+    0% {
+      opacity: 1;
+      translate: 0;
+    }
+    12%,
+    76% {
+      opacity: 0;
+      translate: 0 -0.45rem;
+    }
+    77% {
+      opacity: 0;
+      translate: 0 0.45rem;
+    }
+    100% {
+      opacity: 1;
+      translate: 0;
+    }
+  }
+
+  @keyframes copy-confirmation-cycle {
+    0% {
+      opacity: 0;
+      translate: 0 0.55rem;
+    }
+    12%,
+    76% {
+      opacity: 1;
+      translate: 0;
+    }
+    100% {
+      opacity: 0;
+      translate: 0 -0.55rem;
+    }
   }
 
   @keyframes float {
@@ -941,11 +1006,8 @@
   .header-github {
     justify-content: center;
     min-inline-size: 2.5rem;
+    min-block-size: 2.5rem;
     padding-inline: 0;
-  }
-
-  .header-github svg {
-    inline-size: 1.35rem;
   }
 
   .site-header .theme-toggle {
@@ -1003,7 +1065,7 @@
   }
 
   .modal-inner {
-    padding: 1.25rem 1.25rem 2rem;
+    padding: 1.25rem;
   }
 
   .preview {
@@ -1037,8 +1099,25 @@
     animation: none;
   }
 
-  :where(.site-header, .site-header .logo, .site-header .header-search, .button, .icon-card, .icon-card .glyph, .modal-close, .copy-grid button, .copy-grid a) {
+  :where(.site-header, .site-header .logo, .site-header .header-search, .header-github svg, .theme-icon, .button, .icon-card, .icon-card .glyph, .modal-close, .copy-grid button, .copy-grid a) {
     transition-duration: 0.01ms;
+  }
+
+  .header-github:hover svg,
+  .theme-toggle:hover .theme-icon {
+    rotate: 0deg;
+    scale: 1;
+  }
+
+  .copy-grid button.is-copied .copy-label {
+    animation: none;
+    opacity: 0;
+  }
+
+  .copy-grid button.is-copied .copy-confirmation {
+    animation: none;
+    opacity: 1;
+    translate: 0;
   }
 }
 
