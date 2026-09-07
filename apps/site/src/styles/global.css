@@ -632,8 +632,9 @@
     background: transparent;
     color: var(--ink);
     cursor: pointer;
+    rotate: 0deg;
     box-shadow: inset 0 0 0 0.0625rem var(--rule);
-    transition: border-color 160ms ease, box-shadow 160ms ease;
+    transition: border-color 160ms ease, box-shadow 160ms ease, rotate 160ms var(--ease);
   }
 
   .icon-card[hidden] {
@@ -644,6 +645,7 @@
     z-index: 1;
     border-color: var(--ink);
     box-shadow: none;
+    rotate: -1.25deg;
   }
 
   .icon-card:focus-visible {
@@ -739,7 +741,8 @@
     background: var(--popup-action-surface);
     color: var(--ink);
     cursor: pointer;
-    transition: border-color 160ms ease, background-color 160ms ease, box-shadow 160ms ease, color 160ms ease;
+    rotate: 0deg;
+    transition: border-color 160ms ease, background-color 160ms ease, box-shadow 160ms ease, color 160ms ease, rotate 160ms var(--ease);
   }
 
   .modal-close:hover {
@@ -747,6 +750,7 @@
     background: var(--popup-action-surface-hover);
     color: var(--ink);
     box-shadow: 0.08rem 0.09rem 0 var(--sketch-shadow);
+    rotate: 6deg;
   }
 
   .modal-close svg {
@@ -1102,7 +1106,9 @@
   }
 
   .header-github:hover svg,
-  .theme-toggle:hover .theme-icon {
+  .theme-toggle:hover .theme-icon,
+  .icon-card:hover,
+  .modal-close:hover {
     rotate: 0deg;
     scale: 1;
   }
