@@ -683,9 +683,8 @@
 
   .site-footer {
     display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 1rem;
+    flex-direction: column;
+    gap: 0.35rem;
     padding: 1.5rem var(--content-gutter);
     border-block-start: 1px solid var(--rule);
     color: var(--muted);
@@ -1057,11 +1056,6 @@
 
   #search {
     font-size: 1rem;
-  }
-
-  .site-footer {
-    align-items: flex-start;
-    flex-direction: column;
   }
 
   .modal-inner {
