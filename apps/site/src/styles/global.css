@@ -837,13 +837,12 @@
     text-align: center;
     text-decoration: none;
     box-shadow: 0 0 0 var(--sketch-shadow);
-    transition: border-color 160ms ease, background-color 160ms ease, box-shadow 160ms ease, color 160ms ease, translate 160ms var(--ease);
+    transition: border-color 160ms ease, box-shadow 160ms ease, color 160ms ease, translate 160ms var(--ease);
   }
 
   .copy-grid button:hover,
   .copy-grid a:hover {
     border-color: var(--ink);
-    background: var(--popup-action-surface-hover);
     color: var(--ink);
     box-shadow: 0.1rem 0.12rem 0 var(--sketch-shadow);
     text-decoration: none;
