@@ -20,21 +20,20 @@
 
 @layer base {
   :root {
-    --canvas: #f5f2e9;
-    --paper: #fffdf7;
-    --ink: #1b1a18;
-    --ink-contrast: #fffdf7;
-    --muted: #68645c;
-    --rule: #ccc5b9;
-    --rule-strong: #777168;
-    --accent: #1b1a18;
+    --canvas: #ffffff;
+    --paper: #ffffff;
+    --ink: #171717;
+    --ink-contrast: #ffffff;
+    --muted: #656560;
+    --rule: #d7d7d2;
+    --rule-strong: #85857e;
+    --accent: #171717;
     --accent-hover: #000000;
-    --popup-action-surface: #f1ede3;
-    --popup-action-surface-hover: #fffdf7;
-    --paper-fiber: rgb(27 26 24 / 0.028);
-    --sketch-shadow: #1b1a18;
-    --backdrop: rgb(27 26 24 / 0.62);
-    --card-shadow: 0.14rem 0.16rem 0 rgb(27 26 24 / 0.22);
+    --popup-action-surface: #f4f4f1;
+    --popup-action-surface-hover: #ffffff;
+    --paper-fiber: rgb(23 23 23 / 0.018);
+    --sketch-shadow: #171717;
+    --backdrop: rgb(23 23 23 / 0.62);
     --font-doodle: 'Comic Sans MS', 'Chalkboard SE', 'Bradley Hand', cursive;
     --font-sans: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
@@ -64,7 +63,6 @@
     --paper-fiber: rgb(255 253 247 / 0.025);
     --sketch-shadow: #030303;
     --backdrop: rgb(0 0 0 / 0.72);
-    --card-shadow: 0.14rem 0.16rem 0 rgb(0 0 0 / 0.72);
     color-scheme: dark;
   }
 
@@ -386,7 +384,7 @@
     text-decoration: none;
     box-shadow: 0.22rem 0.24rem 0 var(--button-shadow-color);
     translate: 0;
-    transition: translate 180ms var(--ease), rotate 180ms var(--ease), box-shadow 180ms var(--ease), background 180ms var(--ease);
+    transition: translate 180ms var(--ease), box-shadow 180ms var(--ease), background 180ms var(--ease);
   }
 
   .button:hover {
@@ -416,14 +414,6 @@
 
   .button-secondary:hover {
     background: var(--popup-action-surface-hover);
-  }
-
-  .hero-actions .button:first-child:hover {
-    rotate: -0.6deg;
-  }
-
-  .hero-actions .button:last-child:hover {
-    rotate: 0.6deg;
   }
 
   .button svg {
@@ -595,9 +585,8 @@
     cursor: pointer;
     font-size: 0.85rem;
     box-shadow: 0 0 0 var(--sketch-shadow);
-    rotate: 0deg;
     translate: 0;
-    transition: border-color 150ms ease, background-color 150ms ease, box-shadow 150ms ease, color 150ms ease, rotate 150ms var(--ease), translate 150ms var(--ease);
+    transition: border-color 150ms ease, background-color 150ms ease, box-shadow 150ms ease, color 150ms ease, translate 150ms var(--ease);
   }
 
   .category span {
@@ -610,14 +599,6 @@
     color: var(--ink);
     box-shadow: 0.08rem 0.1rem 0 var(--sketch-shadow);
     translate: -0.04rem -0.05rem;
-  }
-
-  .category:nth-child(odd):hover {
-    rotate: -0.7deg;
-  }
-
-  .category:nth-child(even):hover {
-    rotate: 0.7deg;
   }
 
   .category.is-active {
@@ -651,22 +632,8 @@
     background: transparent;
     color: var(--ink);
     cursor: pointer;
-    rotate: 0deg;
-    translate: 0;
     box-shadow: inset 0 0 0 0.0625rem var(--rule);
-    transition: border-color 160ms ease, box-shadow 160ms ease, rotate 160ms var(--ease), translate 160ms var(--ease);
-  }
-
-  .icon-card::after {
-    position: absolute;
-    inset: -0.08rem 0.06rem 0.04rem -0.06rem;
-    border: 0.0625rem solid transparent;
-    border-radius: 0.92rem 1.14rem 1.02rem 0.96rem / 1.1rem 0.95rem 1.08rem 0.9rem;
-    content: '';
-    opacity: 0;
-    pointer-events: none;
-    rotate: 0deg;
-    transition: border-color 160ms ease, opacity 160ms ease, rotate 160ms var(--ease);
+    transition: border-color 160ms ease, box-shadow 160ms ease;
   }
 
   .icon-card[hidden] {
@@ -676,20 +643,12 @@
   .icon-card:hover {
     z-index: 1;
     border-color: var(--ink);
-    box-shadow: var(--card-shadow);
-    rotate: -1.7deg;
-    translate: 0 -0.125rem;
-  }
-
-  .icon-card:hover::after {
-    border-color: color-mix(in oklab, var(--ink), transparent 18%);
-    opacity: 1;
-    rotate: 1deg;
+    box-shadow: none;
   }
 
   .icon-card:focus-visible {
     border-color: var(--ink);
-    box-shadow: var(--card-shadow);
+    box-shadow: none;
   }
 
   .icon-card .glyph {
@@ -750,7 +709,7 @@
     border-radius: 1.2rem 1.35rem 1.12rem 1.4rem / 1.34rem 1.16rem 1.38rem 1.12rem;
     background: var(--paper);
     color: var(--ink);
-    box-shadow: 0.34rem 0.38rem 0 var(--sketch-shadow), 0 1rem 2.5rem rgb(0 0 0 / 0.22);
+    box-shadow: none;
   }
 
   dialog::backdrop {
@@ -780,7 +739,7 @@
     background: var(--popup-action-surface);
     color: var(--ink);
     cursor: pointer;
-    transition: border-color 160ms ease, background-color 160ms ease, color 160ms ease, rotate 160ms var(--ease);
+    transition: border-color 160ms ease, background-color 160ms ease, box-shadow 160ms ease, color 160ms ease;
   }
 
   .modal-close:hover {
@@ -788,7 +747,6 @@
     background: var(--popup-action-surface-hover);
     color: var(--ink);
     box-shadow: 0.08rem 0.09rem 0 var(--sketch-shadow);
-    rotate: 7deg;
   }
 
   .modal-close svg {
@@ -867,7 +825,7 @@
     text-align: center;
     text-decoration: none;
     box-shadow: 0 0 0 var(--sketch-shadow);
-    transition: border-color 160ms ease, background-color 160ms ease, box-shadow 160ms ease, color 160ms ease, rotate 160ms var(--ease), translate 160ms var(--ease);
+    transition: border-color 160ms ease, background-color 160ms ease, box-shadow 160ms ease, color 160ms ease, translate 160ms var(--ease);
   }
 
   .copy-grid button:hover,
@@ -883,14 +841,6 @@
   .copy-grid button {
     display: grid;
     overflow: hidden;
-  }
-
-  .copy-grid > :nth-child(odd):hover {
-    rotate: -0.7deg;
-  }
-
-  .copy-grid > :nth-child(even):hover {
-    rotate: 0.7deg;
   }
 
   .copy-label,
