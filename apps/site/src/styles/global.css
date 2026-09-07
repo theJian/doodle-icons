@@ -20,17 +20,21 @@
 
 @layer base {
   :root {
-    --canvas: #ffffff;
-    --ink: #111113;
-    --muted: #666b78;
-    --rule: #dfe2e8;
-    --rule-strong: #aeb3bd;
-    --accent: #145cff;
-    --accent-hover: #0048e5;
-    --popup-action-surface: #edf0f6;
-    --popup-action-surface-hover: #e3ebff;
-    --backdrop: rgb(17 17 19 / 0.58);
-    --card-shadow: 0 1px 2px rgb(17 17 19 / 0.06), 0 4px 12px rgb(17 17 19 / 0.08);
+    --canvas: #f5f2e9;
+    --paper: #fffdf7;
+    --ink: #1b1a18;
+    --ink-contrast: #fffdf7;
+    --muted: #68645c;
+    --rule: #ccc5b9;
+    --rule-strong: #777168;
+    --accent: #1b1a18;
+    --accent-hover: #000000;
+    --popup-action-surface: #f1ede3;
+    --popup-action-surface-hover: #fffdf7;
+    --paper-fiber: rgb(27 26 24 / 0.028);
+    --sketch-shadow: #1b1a18;
+    --backdrop: rgb(27 26 24 / 0.62);
+    --card-shadow: 0.14rem 0.16rem 0 rgb(27 26 24 / 0.22);
     --font-doodle: 'Comic Sans MS', 'Chalkboard SE', 'Bradley Hand', cursive;
     --font-sans: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
@@ -46,17 +50,21 @@
   }
 
   :root[data-theme='dark'] {
-    --canvas: #111113;
-    --ink: #f7f7f5;
-    --muted: #a8abb4;
-    --rule: #303238;
-    --rule-strong: #575b65;
-    --accent: #5c8cff;
-    --accent-hover: #7aa2ff;
-    --popup-action-surface: #252832;
-    --popup-action-surface-hover: #1f315c;
+    --canvas: #151412;
+    --paper: #1d1c19;
+    --ink: #f2ede2;
+    --ink-contrast: #171613;
+    --muted: #aaa397;
+    --rule: #403d37;
+    --rule-strong: #8f877b;
+    --accent: #f2ede2;
+    --accent-hover: #ffffff;
+    --popup-action-surface: #282621;
+    --popup-action-surface-hover: #34312b;
+    --paper-fiber: rgb(255 253 247 / 0.025);
+    --sketch-shadow: #030303;
     --backdrop: rgb(0 0 0 / 0.72);
-    --card-shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 4px 12px rgb(0 0 0 / 0.3);
+    --card-shadow: 0.14rem 0.16rem 0 rgb(0 0 0 / 0.72);
     color-scheme: dark;
   }
 
@@ -67,7 +75,11 @@
 
   body {
     min-inline-size: 20rem;
-    background: var(--canvas);
+    background-color: var(--canvas);
+    background-image:
+      radial-gradient(circle at 20% 30%, var(--paper-fiber) 0 0.045rem, transparent 0.055rem),
+      radial-gradient(circle at 75% 65%, var(--paper-fiber) 0 0.035rem, transparent 0.05rem);
+    background-size: 1.15rem 1.15rem, 1.65rem 1.65rem;
     color: var(--ink);
     font-family: var(--font-sans);
     line-height: 1.5;
@@ -84,11 +96,6 @@
   :where(a, button, input, summary):focus-visible {
     outline: 0.1875rem solid var(--accent);
     outline-offset: 0.1875rem;
-  }
-
-  ::selection {
-    background: var(--accent);
-    color: #ffffff;
   }
 
   svg {
@@ -125,7 +132,7 @@
     inset-inline-start: 50%;
     margin-inline: 0;
     border-color: var(--rule);
-    background: var(--canvas);
+    background: var(--paper);
     box-shadow: 0 0.35rem 1.25rem rgb(17 17 19 / 0.1);
     translate: -50% 0;
   }
@@ -188,7 +195,7 @@
     margin-inline: auto;
     border: 1px solid var(--rule-strong);
     border-radius: 999px;
-    background: var(--canvas);
+    background: var(--paper);
     opacity: 0;
     visibility: hidden;
     translate: 0 -0.3rem;
@@ -364,7 +371,7 @@
   }
 
   .button {
-    --button-shadow-color: var(--ink);
+    --button-shadow-color: var(--sketch-shadow);
 
     display: inline-flex;
     align-items: center;
@@ -372,19 +379,19 @@
     gap: 0.6rem;
     min-block-size: 2.75rem;
     padding-inline: 1.25rem;
-    border: 1px solid var(--ink);
-    border-radius: 0.35rem;
+    border: 0.1rem solid var(--ink);
+    border-radius: 0.5rem 0.65rem 0.45rem 0.7rem / 0.6rem 0.48rem 0.65rem 0.5rem;
     font-size: 0.9rem;
     font-weight: 650;
     text-decoration: none;
-    box-shadow: 0.25rem 0.25rem 0 var(--button-shadow-color);
+    box-shadow: 0.22rem 0.24rem 0 var(--button-shadow-color);
     translate: 0;
-    transition: translate 180ms var(--ease), box-shadow 180ms var(--ease), background 180ms var(--ease);
+    transition: translate 180ms var(--ease), rotate 180ms var(--ease), box-shadow 180ms var(--ease), background 180ms var(--ease);
   }
 
   .button:hover {
-    box-shadow: 0.125rem 0.125rem 0 var(--button-shadow-color);
-    translate: 0.125rem 0.125rem;
+    box-shadow: 0.1rem 0.11rem 0 var(--button-shadow-color);
+    translate: 0.12rem 0.13rem;
   }
 
   .button:active {
@@ -395,7 +402,7 @@
   .button-primary {
     border-color: var(--accent);
     background: var(--accent);
-    color: #ffffff;
+    color: var(--ink-contrast);
   }
 
   .button-primary:hover {
@@ -403,10 +410,20 @@
   }
 
   .button-secondary {
-    --button-shadow-color: var(--rule-strong);
-
-    background: var(--canvas);
+    background: var(--paper);
     color: var(--ink);
+  }
+
+  .button-secondary:hover {
+    background: var(--popup-action-surface-hover);
+  }
+
+  .hero-actions .button:first-child:hover {
+    rotate: -0.6deg;
+  }
+
+  .hero-actions .button:last-child:hover {
+    rotate: 0.6deg;
   }
 
   .button svg {
@@ -471,7 +488,7 @@
     margin: 0 auto 1.25rem;
     border: 1px solid var(--rule-strong);
     border-radius: 999px;
-    background: var(--canvas);
+    background: var(--paper);
     transition: border-color 160ms ease, box-shadow 160ms ease;
   }
 
@@ -571,13 +588,16 @@
   .category {
     font: revert;
     padding: 0.35rem 0.85rem;
-    border: 1px solid var(--rule);
-    border-radius: 999px;
-    background: var(--canvas);
+    border: 1px solid var(--rule-strong);
+    border-radius: 999px 900px 999px 850px / 850px 999px 900px 999px;
+    background: var(--paper);
     color: var(--muted);
     cursor: pointer;
     font-size: 0.85rem;
-    transition: all 0.15s;
+    box-shadow: 0 0 0 var(--sketch-shadow);
+    rotate: 0deg;
+    translate: 0;
+    transition: border-color 150ms ease, background-color 150ms ease, box-shadow 150ms ease, color 150ms ease, rotate 150ms var(--ease), translate 150ms var(--ease);
   }
 
   .category span {
@@ -586,18 +606,24 @@
   }
 
   .category:hover {
-    border-color: var(--accent);
+    border-color: var(--ink);
     color: var(--ink);
+    box-shadow: 0.08rem 0.1rem 0 var(--sketch-shadow);
+    translate: -0.04rem -0.05rem;
+  }
+
+  .category:nth-child(odd):hover {
+    rotate: -0.7deg;
+  }
+
+  .category:nth-child(even):hover {
+    rotate: 0.7deg;
   }
 
   .category.is-active {
     border-color: var(--accent);
     background: var(--accent);
-    color: #ffffff;
-  }
-
-  :root[data-theme='dark'] .category.is-active {
-    color: var(--canvas);
+    color: var(--ink-contrast);
   }
 
   .count {
@@ -620,14 +646,27 @@
     gap: 0.5rem;
     min-inline-size: 0;
     padding: 1rem 0.5rem 0.75rem;
-    border: 1px solid var(--rule);
-    border-radius: 1rem;
+    border: 0.125rem solid transparent;
+    border-radius: 1rem 1.08rem 0.94rem 1.12rem / 1.06rem 0.94rem 1.1rem 0.96rem;
     background: transparent;
     color: var(--ink);
     cursor: pointer;
     rotate: 0deg;
     translate: 0;
+    box-shadow: inset 0 0 0 0.0625rem var(--rule);
     transition: border-color 160ms ease, box-shadow 160ms ease, rotate 160ms var(--ease), translate 160ms var(--ease);
+  }
+
+  .icon-card::after {
+    position: absolute;
+    inset: -0.08rem 0.06rem 0.04rem -0.06rem;
+    border: 0.0625rem solid transparent;
+    border-radius: 0.92rem 1.14rem 1.02rem 0.96rem / 1.1rem 0.95rem 1.08rem 0.9rem;
+    content: '';
+    opacity: 0;
+    pointer-events: none;
+    rotate: 0deg;
+    transition: border-color 160ms ease, opacity 160ms ease, rotate 160ms var(--ease);
   }
 
   .icon-card[hidden] {
@@ -636,14 +675,20 @@
 
   .icon-card:hover {
     z-index: 1;
-    border-color: var(--accent);
+    border-color: var(--ink);
     box-shadow: var(--card-shadow);
-    rotate: -1deg;
+    rotate: -1.7deg;
     translate: 0 -0.125rem;
   }
 
+  .icon-card:hover::after {
+    border-color: color-mix(in oklab, var(--ink), transparent 18%);
+    opacity: 1;
+    rotate: 1deg;
+  }
+
   .icon-card:focus-visible {
-    border-color: var(--accent);
+    border-color: var(--ink);
     box-shadow: var(--card-shadow);
   }
 
@@ -701,11 +746,11 @@
     max-block-size: calc(100dvh - 2rem);
     padding: 0;
     overflow: auto;
-    border: 1px solid var(--rule-strong);
-    border-radius: 1.25rem;
-    background: var(--canvas);
+    border: 0.125rem solid var(--ink);
+    border-radius: 1.2rem 1.35rem 1.12rem 1.4rem / 1.34rem 1.16rem 1.38rem 1.12rem;
+    background: var(--paper);
     color: var(--ink);
-    box-shadow: var(--card-shadow), 0.3rem 0.3rem 0 color-mix(in oklab, var(--accent), transparent 78%);
+    box-shadow: 0.34rem 0.38rem 0 var(--sketch-shadow), 0 1rem 2.5rem rgb(0 0 0 / 0.22);
   }
 
   dialog::backdrop {
@@ -739,9 +784,10 @@
   }
 
   .modal-close:hover {
-    border-color: var(--accent);
+    border-color: var(--ink);
     background: var(--popup-action-surface-hover);
-    color: var(--accent);
+    color: var(--ink);
+    box-shadow: 0.08rem 0.09rem 0 var(--sketch-shadow);
     rotate: 7deg;
   }
 
@@ -757,7 +803,7 @@
     padding: 1.5rem;
     border: 1px dashed var(--rule-strong);
     border-radius: 1rem;
-    background: color-mix(in oklab, var(--accent), transparent 97%);
+    background: var(--popup-action-surface);
   }
 
   .preview svg {
@@ -791,8 +837,8 @@
 
   .sizes button.is-active {
     border-color: var(--accent);
-    background: color-mix(in oklab, var(--accent), transparent 90%);
-    color: var(--accent);
+    background: var(--accent);
+    color: var(--ink-contrast);
   }
 
   .copy-grid {
@@ -820,16 +866,18 @@
     line-height: 1.15;
     text-align: center;
     text-decoration: none;
-    transition: border-color 160ms ease, background-color 160ms ease, color 160ms ease, rotate 160ms var(--ease), translate 160ms var(--ease);
+    box-shadow: 0 0 0 var(--sketch-shadow);
+    transition: border-color 160ms ease, background-color 160ms ease, box-shadow 160ms ease, color 160ms ease, rotate 160ms var(--ease), translate 160ms var(--ease);
   }
 
   .copy-grid button:hover,
   .copy-grid a:hover {
-    border-color: var(--accent);
+    border-color: var(--ink);
     background: var(--popup-action-surface-hover);
-    color: var(--accent);
+    color: var(--ink);
+    box-shadow: 0.1rem 0.12rem 0 var(--sketch-shadow);
     text-decoration: none;
-    translate: 0 -0.1rem;
+    translate: -0.05rem -0.08rem;
   }
 
   .copy-grid button {
