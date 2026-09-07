@@ -30,7 +30,6 @@
     --accent: #171717;
     --accent-hover: #000000;
     --popup-action-surface: #f4f4f1;
-    --popup-action-surface-hover: #ffffff;
     --paper-fiber: rgb(23 23 23 / 0.018);
     --sketch-shadow: #171717;
     --filled-control-shadow: #8d8d86;
@@ -61,7 +60,6 @@
     --accent: #f2ede2;
     --accent-hover: #ffffff;
     --popup-action-surface: #282621;
-    --popup-action-surface-hover: #34312b;
     --paper-fiber: rgb(255 253 247 / 0.025);
     --sketch-shadow: #787166;
     --filled-control-shadow: #787166;
@@ -414,10 +412,6 @@
     color: var(--ink);
   }
 
-  .button-secondary:hover {
-    background: var(--popup-action-surface-hover);
-  }
-
   .button svg {
     inline-size: 1.2rem;
     fill: currentColor;
@@ -748,12 +742,11 @@
     color: var(--ink);
     cursor: pointer;
     rotate: 0deg;
-    transition: border-color 160ms ease, background-color 160ms ease, box-shadow 160ms ease, color 160ms ease, rotate 160ms var(--ease);
+    transition: border-color 160ms ease, box-shadow 160ms ease, color 160ms ease, rotate 160ms var(--ease);
   }
 
   .modal-close:hover {
     border-color: var(--ink);
-    background: var(--popup-action-surface-hover);
     color: var(--ink);
     box-shadow: 0.08rem 0.09rem 0 var(--sketch-shadow);
     rotate: 6deg;
