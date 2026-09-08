@@ -7,20 +7,36 @@ import '../styles/global.css';
 // astro build/dev runs with cwd = apps/site
 const icons: IconDef[] = scanIcons(resolve(process.cwd(), '../../icons'));
 
-const categories = [...new Set(icons.map((i) => i.category))].sort().map((name) => ({
-  name,
-  label: name
-    .split('-')
-    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-    .join(' '),
-  count: icons.filter((i) => i.category === name).length,
+const categories = [...new Set(icons.map((icon) => icon.category))]
+  .sort()
+  .map((name) => ({
+    name,
+    label: name
+      .split('-')
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' '),
+    count: icons.filter((icon) => icon.category === name).length,
+  }));
+
+const searchIndex = icons.map((icon) => ({
+  name: icon.kebabName,
+  pascal: icon.pascalName,
+  category: icon.category,
 }));
 
-const searchIndex = icons.map((i) => ({
-  name: i.kebabName,
-  pascal: i.pascalName,
-  category: i.category,
-}));
+const heroIcons = ['rocket', 'heart', 'cloud', 'camera']
+  .map((name) => icons.find((icon) => icon.kebabName === name))
+  .filter((icon): icon is IconDef => Boolean(icon));
+
+const nightIcon = icons.find((icon) => icon.kebabName === 'night');
+const sunnyIcon = icons.find((icon) => icon.kebabName === 'sunny');
+const crossIcon = icons.find((icon) => icon.kebabName === 'cross');
+
+const frameworkLogos = {
+  react: `<svg viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="12" r="1.55" fill="currentColor"/><ellipse cx="12" cy="12" rx="9.5" ry="3.9" fill="none" stroke="currentColor" stroke-width="1.35"/><ellipse cx="12" cy="12" rx="9.5" ry="3.9" fill="none" stroke="currentColor" stroke-width="1.35" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="9.5" ry="3.9" fill="none" stroke="currentColor" stroke-width="1.35" transform="rotate(120 12 12)"/></svg>`,
+  vue: `<svg viewBox="0 0 24 24" focusable="false"><path fill="currentColor" fill-rule="evenodd" d="M1.5 3h5L12 12.5 17.5 3h5L12 21 1.5 3Zm7.8 0L12 7.7 14.7 3H9.3Z"/></svg>`,
+  flutter: `<svg viewBox="0 0 24 24" focusable="false"><path fill="currentColor" d="M14.2 1.5 3.4 12.3l3.35 3.35L20.9 1.5h-6.7Zm0 9.6-5.75 5.75 3.35 3.35 3.35-3.35 5.75-5.75h-6.7Z"/><path fill="currentColor" opacity=".55" d="m11.8 20.2 2.3 2.3h6.8l-5.75-5.65-3.35 3.35Z"/></svg>`,
+};
 ---
 
 <!doctype html>
@@ -28,108 +44,195 @@ const searchIndex = icons.map((i) => ({
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>doodle-icons — 400+ handcrafted SVG icons by Khushmeen Sidhu</title>
+    <meta name="theme-color" content="#ffffff" />
+    <title>doodle-icons — 400+ handcrafted icons</title>
     <meta
       name="description"
-      content="400+ handcrafted doodle SVG icons by Khushmeen Sidhu (Doodle Icons) across 15 categories, free (CC0) and open source. Components for React, React Native, Vue and Flutter."
+      content="400+ handcrafted icons by Khushmeen Sidhu. Browse and copy components for React, React Native, Vue and Flutter."
     />
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✏️</text></svg>" />
   </head>
   <body>
-    <header class="site-header">
-      <a class="logo" href={import.meta.env.BASE_URL}>doodle<span>-icons</span></a>
-      <div class="toolbar">
-        <div class="search-wrap">
-          <input id="search" type="search" placeholder="Search 400+ icons…" autocomplete="off" spellcheck="false" />
-          <kbd>/</kbd>
-        </div>
-        <button id="theme-toggle" class="icon-btn" aria-label="Toggle theme" title="Toggle theme">◐</button>
-      </div>
-    </header>
+    <div class="header-slot">
+      <header class="site-header" id="context-header">
+        <div class="header-inner">
+          <a class="logo" href={import.meta.env.BASE_URL} aria-label="doodle-icons home">DOODLE <span>ICONS</span></a>
 
-    <nav class="chips" aria-label="Categories">
-      <button class="chip is-active" data-category="">All <span>{icons.length}</span></button>
-      {
-        categories.map((c) => (
-          <button class="chip" data-category={c.name}>
-            {c.label} <span>{c.count}</span>
+          <div class="header-search" role="search">
+            <label class="visually-hidden" for="header-search">Search icons</label>
+            <svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.8" /><path d="m16 16 5 5" /></svg>
+            <input id="header-search" type="search" placeholder="Search icons…" autocomplete="off" spellcheck="false" />
+          </div>
+
+          <a class="header-github" href="https://github.com/theJian/doodle-icons" aria-label="View doodle-icons on GitHub" title="View on GitHub">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 2.6a9.7 9.7 0 0 0-3.1 18.9c.5.1.7-.2.7-.5v-1.9c-2.8.6-3.4-1.2-3.4-1.2-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 0 1.6 1 1.6 1 .9 1.6 2.4 1.1 2.9.9.1-.7.4-1.1.7-1.3-2.2-.3-4.6-1.1-4.6-4.8 0-1.1.4-1.9 1-2.6-.1-.3-.4-1.3.1-2.6 0 0 .8-.3 2.7 1a9.2 9.2 0 0 1 4.9 0c1.9-1.3 2.7-1 2.7-1 .5 1.3.2 2.3.1 2.6.6.7 1 1.5 1 2.6 0 3.7-2.3 4.5-4.6 4.8.4.3.7.9.7 1.8V21c0 .3.2.6.7.5A9.7 9.7 0 0 0 12 2.6Z" /></svg>
+          </a>
+
+          <button class="theme-toggle" data-theme-toggle type="button" aria-label="Use dark theme" aria-pressed="false" title="Use dark theme">
+            {nightIcon && <span class="theme-icon theme-icon-night" aria-hidden="true" set:html={inlineSvg(nightIcon)} />}
+            {sunnyIcon && <span class="theme-icon theme-icon-sunny" aria-hidden="true" set:html={inlineSvg(sunnyIcon)} />}
           </button>
-        ))
-      }
-    </nav>
+        </div>
+      </header>
+    </div>
 
     <main>
-      <p class="count" id="count" role="status" aria-live="polite"></p>
-      <div class="grid" id="grid">
+      <section class="hero" aria-labelledby="hero-title">
         {
-          icons.map((icon) => (
-            <button
-              class="card"
-              data-name={icon.kebabName}
-              data-pascal={icon.pascalName}
-              data-category={icon.category}
-              data-viewbox={icon.viewBox}
-              type="button"
-            >
-              <span class="glyph" set:html={inlineSvg(icon)} />
-              <span class="name">{icon.kebabName}</span>
-            </button>
+          heroIcons.map((icon, index) => (
+            <span class={`hero-doodle hero-doodle-${index + 1}`} aria-hidden="true" set:html={inlineSvg(icon)} />
           ))
         }
-      </div>
-      <p class="empty" id="empty" hidden>No icons match your search.</p>
+
+        <div class="hero-copy">
+          <h1 id="hero-title">doodle icons</h1>
+          <p>400+ handcrafted icons for React, React Native, Vue and Flutter.</p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="#catalog">Browse icons</a>
+            <a class="button button-secondary" href="https://github.com/theJian/doodle-icons">
+              <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 2.6a9.7 9.7 0 0 0-3.1 18.9c.5.1.7-.2.7-.5v-1.9c-2.8.6-3.4-1.2-3.4-1.2-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 0 1.6 1 1.6 1 .9 1.6 2.4 1.1 2.9.9.1-.7.4-1.1.7-1.3-2.2-.3-4.6-1.1-4.6-4.8 0-1.1.4-1.9 1-2.6-.1-.3-.4-1.3.1-2.6 0 0 .8-.3 2.7 1a9.2 9.2 0 0 1 4.9 0c1.9-1.3 2.7-1 2.7-1 .5 1.3.2 2.3.1 2.6.6.7 1 1.5 1 2.6 0 3.7-2.3 4.5-4.6 4.8.4.3.7.9.7 1.8V21c0 .3.2.6.7.5A9.7 9.7 0 0 0 12 2.6Z" /></svg>
+              View on GitHub
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section class="catalog" id="catalog" aria-labelledby="catalog-title">
+        <h2 id="catalog-title" class="visually-hidden">Browse all icons</h2>
+
+        <div class="search-wrap" role="search">
+          <label class="visually-hidden" for="search">Search icons</label>
+          <svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.8" /><path d="m16 16 5 5" /></svg>
+          <input id="search" name="q" type="search" placeholder="Search 400+ icons…" autocomplete="off" spellcheck="false" />
+          <button id="search-clear" class="search-clear" type="button" aria-label="Clear search" hidden>
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m7 7 10 10M17 7 7 17" /></svg>
+          </button>
+          <kbd>/</kbd>
+        </div>
+
+        <nav class="categories" aria-label="Icon categories">
+          <div class="category-track">
+            <button class="category is-active" data-category="" type="button" aria-pressed="true">
+              All <span>{icons.length}</span>
+            </button>
+            {
+              categories.map((category) => (
+                <button class="category" data-category={category.name} type="button" aria-pressed="false">
+                  {category.label} <span>{category.count}</span>
+                </button>
+              ))
+            }
+          </div>
+        </nav>
+
+        <p class="count" id="count" role="status" aria-live="polite"></p>
+
+        <div class="icon-grid" id="grid">
+          {
+            icons.map((icon) => (
+              <button
+                class="icon-card"
+                data-name={icon.kebabName}
+                data-pascal={icon.pascalName}
+                data-category={icon.category}
+                type="button"
+                aria-label={`Open ${icon.kebabName} icon options`}
+              >
+                <span class="glyph" set:html={inlineSvg(icon)} />
+                <span class="icon-name">{icon.kebabName}</span>
+              </button>
+            ))
+          }
+        </div>
+        <p class="empty" id="empty" hidden>No icons match your search.</p>
+      </section>
     </main>
 
-    <footer class="site-footer">
+    <footer class="site-footer" id="packages">
       <p>
-        400+ handcrafted icons by
-        <a href="https://khushmeen.com/icons.html" rel="noopener">Khushmeen Sidhu</a> ·
-        <a href="https://khushmeen.com/icons.html" rel="noopener">Doodle Icons</a> · icons
-        <a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0</a> · packages
-        <a href="https://opensource.org/licenses/MIT">MIT</a>
+        400+ handcrafted icons by <a href="https://khushmeen.com/icons.html">Khushmeen Sidhu</a> · icons
+        <a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0</a>
       </p>
-      <p>
-        <a href="https://github.com/jian/doodle-icons">GitHub</a> ·
-        <a href="https://www.npmjs.com/package/@doodle-icons/react">npm</a> ·
-        <a href="https://pub.dev/packages/doodle_icons">pub.dev</a>
-      </p>
+      <div class="footer-code-row">
+        <p>
+          Code maintained by <a href="https://github.com/thejian">@theJian</a> · packages
+          <a href="https://opensource.org/licenses/MIT">MIT</a>
+        </p>
+        <nav class="footer-links" aria-label="Library links">
+          <a href="https://github.com/theJian/doodle-icons">GitHub</a> ·
+          <a href="https://www.npmjs.com/package/@doodle-icons/react">npm</a> ·
+          <a href="https://pub.dev/packages/doodle_icons">pub.dev</a>
+        </nav>
+      </div>
     </footer>
 
-    <dialog id="modal">
+    <dialog id="modal" aria-labelledby="modal-name" closedby="any">
       <div class="modal-inner">
-        <button id="modal-close" class="icon-btn" aria-label="Close">✕</button>
+        <button id="modal-close" class="modal-close" type="button" aria-label="Close icon details">
+          {crossIcon && <span aria-hidden="true" set:html={inlineSvg(crossIcon)} />}
+        </button>
         <div class="preview" id="preview"></div>
         <div class="sizes" role="group" aria-label="Preview size">
-          <button data-size="32">32</button>
-          <button data-size="64" class="is-active">64</button>
-          <button data-size="128">128</button>
+          <button data-size="32" type="button">32</button>
+          <button data-size="64" class="is-active" type="button">64</button>
+          <button data-size="128" type="button">128</button>
         </div>
         <h2 id="modal-name"></h2>
-        <p class="meta" id="modal-meta"></p>
-        <div class="copy-grid" id="copy-grid">
-          <button data-what="svg">SVG</button>
-          <button data-what="react">React</button>
-          <button data-what="vue">Vue</button>
-          <button data-what="rn">React Native</button>
-          <button data-what="flutter">Flutter</button>
-          <a id="download" download="">Download</a>
+        <div class="copy-grid" id="copy-list">
+          <button data-what="svg" type="button">
+            <span class="copy-label">SVG</span>
+            <span class="copy-confirmation" aria-hidden="true">Copied</span>
+          </button>
+          <button data-what="react" type="button">
+            <span class="copy-label">
+              <span class="framework-logo" aria-hidden="true" set:html={frameworkLogos.react} />
+              <span>React</span>
+            </span>
+            <span class="copy-confirmation" aria-hidden="true">Copied</span>
+          </button>
+          <button data-what="vue" type="button">
+            <span class="copy-label">
+              <span class="framework-logo" aria-hidden="true" set:html={frameworkLogos.vue} />
+              <span>Vue</span>
+            </span>
+            <span class="copy-confirmation" aria-hidden="true">Copied</span>
+          </button>
+          <button data-what="rn" type="button">
+            <span class="copy-label">
+              <span class="framework-logo" aria-hidden="true" set:html={frameworkLogos.react} />
+              <span>React Native</span>
+            </span>
+            <span class="copy-confirmation" aria-hidden="true">Copied</span>
+          </button>
+          <button data-what="flutter" type="button">
+            <span class="copy-label">
+              <span class="framework-logo" aria-hidden="true" set:html={frameworkLogos.flutter} />
+              <span>Flutter</span>
+            </span>
+            <span class="copy-confirmation" aria-hidden="true">Copied</span>
+          </button>
+          <a id="download" download="">
+            <span>Download</span>
+          </a>
         </div>
+        <p class="visually-hidden" id="copy-status" role="status" aria-live="polite" aria-atomic="true"></p>
       </div>
     </dialog>
 
     <script>
       import Fuse from 'fuse.js';
 
-      const searchIndex = JSON.parse(
-        document.getElementById('search-index')?.textContent ?? 'null',
-      );
-
+      const searchIndex = JSON.parse(document.getElementById('search-index')?.textContent ?? 'null');
       const grid = document.getElementById('grid') as HTMLElement;
-      const cards = [...grid.querySelectorAll<HTMLButtonElement>('.card')];
+      const cards = [...grid.querySelectorAll<HTMLButtonElement>('.icon-card')];
       const search = document.getElementById('search') as HTMLInputElement;
+      const searchWrap = search.closest('.search-wrap') as HTMLElement;
+      const contextHeader = document.getElementById('context-header') as HTMLElement;
+      const headerSearch = document.getElementById('header-search') as HTMLInputElement;
+      const searchClear = document.getElementById('search-clear') as HTMLButtonElement;
       const countEl = document.getElementById('count') as HTMLElement;
       const emptyEl = document.getElementById('empty') as HTMLElement;
-      const chips = [...document.querySelectorAll<HTMLButtonElement>('.chip')];
+      const categories = [...document.querySelectorAll<HTMLButtonElement>('.category')];
 
       const fuse = new Fuse(searchIndex, {
         keys: [
@@ -143,14 +246,20 @@ const searchIndex = icons.map((i) => ({
 
       let activeCategory = '';
       let activeQuery = '';
+      let mainSearchIsPast = false;
+
+      function syncSearchClear(): void {
+        searchClear.hidden = search.value.length === 0;
+      }
 
       function applyFilters(): void {
         let matches: Set<Element> | null = null;
         if (activeQuery) {
           matches = new Set(
-            fuse.search(activeQuery).map((r) => cards.find((c) => c.dataset.name === r.item.name)),
+            fuse.search(activeQuery).map((result) => cards.find((card) => card.dataset.name === result.item.name)),
           );
         }
+
         let visible = 0;
         for (const card of cards) {
           const show =
@@ -159,55 +268,129 @@ const searchIndex = icons.map((i) => ({
           card.hidden = !show;
           if (show) visible++;
         }
+
         countEl.textContent = `Showing ${visible} of ${cards.length} icons`;
         emptyEl.hidden = visible > 0;
+
         const hash = new URLSearchParams();
         if (activeQuery) hash.set('q', activeQuery);
         if (activeCategory) hash.set('category', activeCategory);
-        history.replaceState(null, '', hash.toString() ? `#${hash}` : '#');
+        history.replaceState(null, '', hash.toString() ? `#${hash}` : location.pathname);
       }
 
-      search.addEventListener('input', () => {
-        activeQuery = search.value.trim().toLowerCase();
+      function updateQuery(value: string): void {
+        search.value = value;
+        headerSearch.value = value;
+        activeQuery = value.trim().toLowerCase();
+        syncSearchClear();
         applyFilters();
+      }
+
+      search.addEventListener('input', () => updateQuery(search.value));
+      headerSearch.addEventListener('input', () => updateQuery(headerSearch.value));
+
+      searchClear.addEventListener('click', () => {
+        updateQuery('');
+        search.focus();
       });
 
-      for (const chip of chips) {
-        chip.addEventListener('click', () => {
-          chips.forEach((c) => c.classList.toggle('is-active', c === chip));
-          activeCategory = chip.dataset.category ?? '';
+      for (const category of categories) {
+        category.addEventListener('click', () => {
+          for (const item of categories) {
+            const selected = item === category;
+            item.classList.toggle('is-active', selected);
+            item.setAttribute('aria-pressed', String(selected));
+          }
+          activeCategory = category.dataset.category ?? '';
           applyFilters();
         });
       }
 
-      document.addEventListener('keydown', (e) => {
-        if (e.key === '/' && document.activeElement !== search) {
-          e.preventDefault();
-          search.focus();
+      document.addEventListener('keydown', (event) => {
+        const activeElement = document.activeElement;
+        const isTyping = activeElement instanceof HTMLInputElement || activeElement instanceof HTMLTextAreaElement;
+        if (event.key === '/' && !isTyping) {
+          event.preventDefault();
+          (contextHeader.classList.contains('is-visible') ? headerSearch : search).focus();
         }
       });
 
-      // --- modal -----------------------------------------------------------
+      function transferSearchFocus(from: HTMLInputElement, to: HTMLInputElement): void {
+        if (document.activeElement !== from) return;
+
+        const selectionStart = from.selectionStart;
+        const selectionEnd = from.selectionEnd;
+        const selectionDirection = from.selectionDirection;
+        const inputScroll = from.scrollLeft;
+
+        to.focus({ preventScroll: true });
+        if (selectionStart !== null && selectionEnd !== null) {
+          to.setSelectionRange(selectionStart, selectionEnd, selectionDirection ?? 'none');
+        }
+        to.scrollLeft = inputScroll;
+      }
+
+      function setContextHeaderVisible(visible: boolean): void {
+        const isVisible = contextHeader.classList.contains('is-visible');
+        if (isVisible === visible) return;
+
+        if (visible) {
+          contextHeader.classList.add('is-visible');
+          transferSearchFocus(search, headerSearch);
+          return;
+        }
+
+        transferSearchFocus(headerSearch, search);
+        contextHeader.classList.remove('is-visible');
+      }
+
+      function syncContextHeaderVisibility(): void {
+        setContextHeaderVisible(mainSearchIsPast);
+      }
+
+      const searchObserver = new IntersectionObserver(([entry]) => {
+        mainSearchIsPast = !entry.isIntersecting && entry.boundingClientRect.bottom <= 0;
+        syncContextHeaderVisibility();
+      });
+      searchObserver.observe(searchWrap);
+
       const modal = document.getElementById('modal') as HTMLDialogElement;
       const preview = document.getElementById('preview') as HTMLElement;
       const modalName = document.getElementById('modal-name') as HTMLElement;
-      const modalMeta = document.getElementById('modal-meta') as HTMLElement;
       const download = document.getElementById('download') as HTMLAnchorElement;
+      const copyStatus = document.getElementById('copy-status') as HTMLElement;
+      const copyButtons = [...document.querySelectorAll<HTMLButtonElement>('#copy-list button[data-what]')];
       let currentCard: HTMLButtonElement | null = null;
       let currentSize = 64;
+      let downloadUrl = '';
+      let copyFeedbackTimer: number | undefined;
+
+      function clearCopyFeedback(): void {
+        if (copyFeedbackTimer !== undefined) window.clearTimeout(copyFeedbackTimer);
+        copyFeedbackTimer = undefined;
+        copyButtons.forEach((button) => button.classList.remove('is-copied'));
+        copyStatus.textContent = '';
+      }
+
+      function showCopyFeedback(button: HTMLButtonElement, label: string): void {
+        clearCopyFeedback();
+        void button.offsetWidth;
+        button.classList.add('is-copied');
+        copyStatus.textContent = `${label} copied to clipboard.`;
+        copyFeedbackTimer = window.setTimeout(clearCopyFeedback, 3000);
+      }
 
       function standaloneSvg(card: HTMLButtonElement, fill: string): string {
         const svg = card.querySelector('svg')!.cloneNode(true) as SVGElement;
         svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
         svg.setAttribute('width', '100%');
         svg.setAttribute('height', '100%');
-        svg.querySelectorAll('[fill="currentColor"]').forEach((el) => el.setAttribute('fill', fill));
+        svg.querySelectorAll('[fill="currentColor"]').forEach((element) => element.setAttribute('fill', fill));
         return svg.outerHTML;
       }
 
       function snippets(card: HTMLButtonElement): Record<string, string> {
         const pascal = card.dataset.pascal!;
-        const name = card.dataset.name!;
         return {
           svg: standaloneSvg(card, '#000000'),
           react: `import { ${pascal} } from '@doodle-icons/react';\n\nexport function Example() {\n  return <${pascal} size={64} />;\n}`,
@@ -217,72 +400,107 @@ const searchIndex = icons.map((i) => ({
         };
       }
 
+      function applySize(): void {
+        const svg = preview.querySelector('svg');
+        if (!svg) return;
+        svg.setAttribute('width', String(currentSize));
+        svg.setAttribute('height', String(currentSize));
+      }
+
       function openModal(card: HTMLButtonElement): void {
         currentCard = card;
+        clearCopyFeedback();
         modalName.textContent = card.dataset.name!;
-        modalMeta.textContent = `${card.dataset.category} · viewBox "${card.dataset.viewbox}" · export ${card.dataset.pascal}`;
         preview.replaceChildren(card.querySelector('svg')!.cloneNode(true));
         applySize();
-        const blob = new Blob([standaloneSvg(card, '#000000')], { type: 'image/svg+xml' });
-        download.href = URL.createObjectURL(blob);
+
+        if (downloadUrl) URL.revokeObjectURL(downloadUrl);
+        downloadUrl = URL.createObjectURL(new Blob([standaloneSvg(card, '#000000')], { type: 'image/svg+xml' }));
+        download.href = downloadUrl;
         download.download = `${card.dataset.name}.svg`;
         modal.showModal();
       }
 
-      function applySize(): void {
-        const svg = preview.querySelector('svg');
-        if (svg) {
-          svg.setAttribute('width', String(currentSize));
-          svg.setAttribute('height', String(currentSize));
-        }
-      }
-
       cards.forEach((card) => card.addEventListener('click', () => openModal(card)));
       document.getElementById('modal-close')!.addEventListener('click', () => modal.close());
+      modal.addEventListener('close', clearCopyFeedback);
+      modal.addEventListener('click', (event) => {
+        if (event.target !== modal) return;
+        const bounds = modal.getBoundingClientRect();
+        const isInside =
+          event.clientX >= bounds.left &&
+          event.clientX <= bounds.right &&
+          event.clientY >= bounds.top &&
+          event.clientY <= bounds.bottom;
+        if (!isInside) modal.close();
+      });
 
-      document.querySelectorAll<HTMLButtonElement>('.sizes button').forEach((btn) =>
-        btn.addEventListener('click', () => {
-          document.querySelectorAll('.sizes button').forEach((b) => b.classList.toggle('is-active', b === btn));
-          currentSize = Number(btn.dataset.size);
+      document.querySelectorAll<HTMLButtonElement>('.sizes button').forEach((button) =>
+        button.addEventListener('click', () => {
+          document.querySelectorAll('.sizes button').forEach((item) => item.classList.toggle('is-active', item === button));
+          currentSize = Number(button.dataset.size);
           applySize();
         }),
       );
 
-      const flash = (el: HTMLElement, text: string): void => {
-        const original = el.textContent;
-        el.textContent = 'Copied!';
-        setTimeout(() => (el.textContent = original), 1200);
-      };
-
-      document.querySelectorAll<HTMLButtonElement>('#copy-grid button').forEach((btn) =>
-        btn.addEventListener('click', () => {
+      copyButtons.forEach((button) =>
+        button.addEventListener('click', async () => {
           if (!currentCard) return;
-          navigator.clipboard.writeText(snippets(currentCard)[btn.dataset.what!]).then(() => flash(btn, 'Copied!'));
+          const label = button.querySelector('.copy-label')?.textContent?.trim() ?? 'Icon';
+          try {
+            await navigator.clipboard.writeText(snippets(currentCard)[button.dataset.what!]);
+            showCopyFeedback(button, label);
+          } catch {
+            clearCopyFeedback();
+            copyStatus.textContent = `Could not copy ${label}.`;
+          }
         }),
       );
 
-      // --- theme -----------------------------------------------------------
-      const themeToggle = document.getElementById('theme-toggle') as HTMLButtonElement;
-      const stored = localStorage.getItem('doodle-theme');
-      if (stored === 'light' || stored === 'dark') document.documentElement.dataset.theme = stored;
-      themeToggle.addEventListener('click', () => {
-        const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
-        document.documentElement.dataset.theme = next;
-        localStorage.setItem('doodle-theme', next);
-      });
+      const themeToggles = [...document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]')];
+      const storedTheme = localStorage.getItem('doodle-theme');
 
-      // --- initial state from hash -----------------------------------------
+      function syncThemeToggle(theme: 'light' | 'dark'): void {
+        const isDark = theme === 'dark';
+        const label = `Use ${isDark ? 'light' : 'dark'} theme`;
+        for (const themeToggle of themeToggles) {
+          themeToggle.setAttribute('aria-pressed', String(isDark));
+          themeToggle.setAttribute('aria-label', label);
+          themeToggle.title = label;
+        }
+      }
+
+      const initialTheme = storedTheme === 'dark' ? 'dark' : 'light';
+      document.documentElement.dataset.theme = initialTheme;
+      syncThemeToggle(initialTheme);
+
+      for (const themeToggle of themeToggles) {
+        themeToggle.addEventListener('click', () => {
+          const isDark = document.documentElement.dataset.theme === 'dark';
+          const next = isDark ? 'light' : 'dark';
+          document.documentElement.dataset.theme = next;
+          syncThemeToggle(next);
+          localStorage.setItem('doodle-theme', next);
+        });
+      }
+
       const params = new URLSearchParams(location.hash.slice(1));
-      const q = params.get('q');
+      const query = params.get('q');
       const category = params.get('category');
-      if (q) {
-        search.value = q;
-        activeQuery = q.toLowerCase();
+      if (query) {
+        search.value = query;
+        headerSearch.value = query;
+        activeQuery = query.toLowerCase();
       }
       if (category) {
         activeCategory = category;
-        chips.forEach((c) => c.classList.toggle('is-active', c.dataset.category === category));
+        for (const item of categories) {
+          const selected = item.dataset.category === category;
+          item.classList.toggle('is-active', selected);
+          item.setAttribute('aria-pressed', String(selected));
+        }
       }
+      syncSearchClear();
       applyFilters();
     </script>
     <script type="application/json" id="search-index" set:html={JSON.stringify(searchIndex)} />
