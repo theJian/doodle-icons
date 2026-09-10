@@ -70,6 +70,10 @@ import { Rocket } from '@doodle-icons/vue';
 </template>
 ```
 
+### Tree-shaking
+
+The React, Vue, and React Native packages publish separate ES modules for each icon. Use named imports with a bundler that supports tree-shaking to exclude unused icons. React Native support depends on your Metro/Expo configuration. CommonJS builds are also provided for compatibility; use the ESM entry for tree-shaking.
+
 ### Flutter
 
 ```yaml
