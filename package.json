@@ -15,11 +15,12 @@
     "dev:site": "bun run --filter '@doodle-icons/site' dev",
     "build:site": "bun run --filter '@doodle-icons/site' build",
     "preview:site": "bun run --filter '@doodle-icons/site' preview",
-    "test": "bun scripts/smoke-test.tsx"
+    "test": "bun scripts/smoke-test.tsx && bun scripts/tree-shaking-test.ts"
   },
   "devDependencies": {
     "@types/bun": "^1.3.0",
     "@vue/server-renderer": "^3.5.0",
+    "esbuild": "^0.27.7",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "typescript": "^5.7.0",

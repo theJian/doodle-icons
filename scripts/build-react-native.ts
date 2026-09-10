@@ -1,6 +1,6 @@
 import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { $ } from 'bun';
+import { buildPackage } from './build-package.ts';
 import { scanIcons, uniquifyIds, type IconDef, type IconNode } from './lib.ts';
 
 const pkgDir = join(import.meta.dir, '..', 'packages', 'react-native');
@@ -92,5 +92,5 @@ for (const def of icons) {
 }
 writeFileSync(join(srcDir, 'index.ts'), `${exports.join('\n')}\n`);
 
-await $`bun x tsup`.cwd(pkgDir).quiet();
+await buildPackage(pkgDir);
 console.log(`react-native: ${icons.length} icon components built`);
