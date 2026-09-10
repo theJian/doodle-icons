@@ -33,7 +33,9 @@ function toJsx(node: IconNode, indent: string): string {
 function iconComponent(def: IconDef): string {
   uniquifyIds(def.nodes, def.pascalName);
   const inner = def.nodes.map((n) => toJsx(n, '        ')).join('\n');
-  return `import * as React from 'react';
+  return `"use client";
+
+import * as React from 'react';
 import { useIconProps, type DoodleIconProps } from '../context.js';
 
 export type ${def.pascalName}Props = DoodleIconProps;
@@ -60,7 +62,9 @@ ${inner}
 }
 
 function contextFile(): string {
-  return `import * as React from 'react';
+  return `"use client";
+
+import * as React from 'react';
 
 export type DoodleIconConfig = {
   size?: number | string;

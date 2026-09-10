@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { renderToString } from 'react-dom/server';
 import { Search, DoodleIconProvider, Rocket } from '../packages/react/dist/index.js';
 import { Search as VueSearch } from '../packages/vue/dist/index.js';
@@ -14,6 +16,14 @@ function equal(actual: unknown, expected: unknown, message: string): void {
 
 equal(metadata.total, 451, 'metadata icon count');
 equal(metadata.categories.length, 15, 'metadata category count');
+
+const reactDist = join(import.meta.dir, '..', 'packages', 'react', 'dist');
+const clientDirective = /^['"]use client['"];?/;
+ok(clientDirective.test(readFileSync(join(reactDist, 'context.js'), 'utf8')), 'react: context is a client module');
+ok(
+  clientDirective.test(readFileSync(join(reactDist, 'icons', 'Rocket.js'), 'utf8')),
+  'react: icons are client modules',
+);
 
 const reactHtml = renderToString(
   <DoodleIconProvider size={48}>
