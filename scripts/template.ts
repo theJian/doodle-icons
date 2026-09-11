@@ -3,17 +3,8 @@ import { join } from 'node:path';
 import { format } from 'prettier';
 
 const templatesDir = join(import.meta.dir, 'templates');
-const templates = new Map<string, string>();
-const renderers = new Map<string, (...values: string[]) => string>();
-
-function loadTemplate(name: string): string {
-  const cached = templates.get(name);
-  if (cached !== undefined) return cached;
-
-  const template = readFileSync(join(templatesDir, name), 'utf8');
-  templates.set(name, template);
-  return template;
-}
+type Renderer = { keys: string[]; render: (...values: string[]) => string };
+const renderers = new Map<string, Renderer>();
 
 function compileTemplate(template: string, keys: string[]): (...values: string[]) => string {
   // Templates are trusted build inputs; replacement values stay function arguments.
@@ -24,13 +15,20 @@ function compileTemplate(template: string, keys: string[]): (...values: string[]
 export function renderTemplate(name: string, data: Record<string, string> = {}): string {
   const keys = Object.keys(data);
   const values = Object.values(data);
-  const cacheKey = `${name}:${keys.join(',')}`;
-  let render = renderers.get(cacheKey);
-  if (render === undefined) {
-    render = compileTemplate(loadTemplate(name), keys);
-    renderers.set(cacheKey, render);
+  let renderer = renderers.get(name);
+  if (renderer === undefined) {
+    const template = readFileSync(join(templatesDir, name), 'utf8');
+    renderer = { keys, render: compileTemplate(template, keys) };
+    renderers.set(name, renderer);
+  } else if (
+    renderer.keys.length !== keys.length ||
+    renderer.keys.some((key, index) => key !== keys[index])
+  ) {
+    throw new Error(
+      `Template ${name} must always be rendered with the same data keys`,
+    );
   }
-  return render(...values);
+  return renderer.render(...values);
 }
 
 export async function renderTypeScriptTemplate(
