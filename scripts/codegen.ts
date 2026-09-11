@@ -45,10 +45,11 @@ function optimizationPlugins(
 export function optimizeIcon(
   def: IconDef,
   target: CodegenTarget,
+  sourceFile: string,
   plugins: CustomPlugin[] = [],
 ) {
   return optimize(def.rawSvg, {
-    path: `${def.category}/${def.kebabName}.svg`,
+    path: sourceFile,
     plugins: [...optimizationPlugins(def.pascalName, target), ...plugins],
   });
 }
@@ -117,7 +118,7 @@ function optimizeIconToXast(def: IconDef, target: JsxTarget): XastRoot {
   };
 
   const sourceFile = `${def.category}/${def.kebabName}.svg`;
-  optimizeIcon(def, target, [jsxTargetPlugin(target, sourceFile), extractPlugin]);
+  optimizeIcon(def, target, sourceFile, [jsxTargetPlugin(target, sourceFile), extractPlugin]);
   if (optimized === undefined) throw new Error(`SVGO did not produce an AST for ${sourceFile}`);
   return optimized;
 }
@@ -131,7 +132,8 @@ export function convertIconToJsx(def: IconDef, target: JsxTarget, svgProps: SvgP
 
 /** Optimize an icon and add the bindings consumed by the generated Vue SFC. */
 export function convertIconToVueSvg(def: IconDef): string {
-  const svg = optimizeIcon(def, 'vue').data;
+  const sourceFile = `${def.category}/${def.kebabName}.svg`;
+  const svg = optimizeIcon(def, 'vue', sourceFile).data;
   return svg.replace(/^<svg\b([^>]*)>/, (_tag, attributes: string) => {
     const staticAttributes = attributes.replace(/\s(?:width|height)="[^"]*"/g, '');
     return `<svg${staticAttributes} :width="size" :height="size" aria-hidden="true" :style="{ color }" v-bind="$attrs">`;
