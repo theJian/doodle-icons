@@ -46,7 +46,7 @@ rmSync(distDir, { recursive: true, force: true });
 const viteConfig = join(pkgDir, 'vite.config.ts');
 await build({ configFile: viteConfig, mode: 'icons' });
 await build({ configFile: viteConfig, mode: 'index' });
-await $`bunx vue-tsc --project ${join(pkgDir, 'tsconfig.build.json')}`;
+await $`bunx vue-tsc --project ${join(pkgDir, 'tsconfig.json')} --noEmit false --noEmitOnError --emitDeclarationOnly --declaration --rootDir ${srcDir} --outDir ${distDir}`;
 
 cpSync(join(distDir, 'index.d.ts'), join(distDir, 'cjs', 'index.d.ts'));
 cpSync(join(distDir, 'icons'), join(distDir, 'cjs', 'icons'), {
