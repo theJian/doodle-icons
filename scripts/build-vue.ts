@@ -1,6 +1,16 @@
-import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
+import {
+  cpSync,
+  mkdirSync,
+  readFileSync,
+  readdirSync,
+  renameSync,
+  rmSync,
+  writeFileSync,
+} from 'node:fs';
 import { join } from 'node:path';
-import { buildVuePackage } from './build-vue-package.ts';
+import { fileURLToPath } from 'node:url';
+import { $ } from 'bun';
+import { build } from 'vite';
 import { convertIconToVueSvg } from './codegen.ts';
 import { scanIcons, type IconDef } from './lib.ts';
 import { renderTemplate, renderVueTemplate } from './template.ts';
@@ -8,6 +18,7 @@ import { renderTemplate, renderVueTemplate } from './template.ts';
 const pkgDir = join(import.meta.dir, '..', 'packages', 'vue');
 const srcDir = join(pkgDir, 'src');
 const iconsDir = join(srcDir, 'icons');
+const distDir = join(pkgDir, 'dist');
 
 async function iconComponent(def: IconDef): Promise<string> {
   return renderVueTemplate('vue-icon.vue.template', {
@@ -23,12 +34,41 @@ mkdirSync(iconsDir, { recursive: true });
 
 const exports: string[] = [];
 for (const def of icons) {
-  writeFileSync(join(iconsDir, `${def.pascalName}.vue`), await iconComponent(def));
+  writeFileSync(
+    join(iconsDir, `${def.pascalName}.vue`),
+    await iconComponent(def),
+  );
   exports.push(
-    renderTemplate('vue-icon-exports.ts.template', { componentName: def.pascalName }).trim(),
+    renderTemplate('vue-icon-exports.ts.template', {
+      componentName: def.pascalName,
+    }).trim(),
   );
 }
 writeFileSync(join(srcDir, 'index.ts'), `${exports.join('\n')}\n`);
 
-buildVuePackage(pkgDir);
+rmSync(distDir, { recursive: true, force: true });
+const viteConfig = join(pkgDir, 'vite.config.ts');
+await build({ configFile: viteConfig, mode: 'icons' });
+await build({ configFile: viteConfig, mode: 'index' });
+await $`node ${fileURLToPath(import.meta.resolve('vue-tsc/bin/vue-tsc.js'))} --project ${join(pkgDir, 'tsconfig.build.json')}`;
+
+// Published modules are .js, so their declarations must use the same specifiers.
+const declarationFiles = [join(distDir, 'index.d.ts')];
+for (const file of readdirSync(join(distDir, 'icons'))) {
+  if (!file.endsWith('.vue.d.ts')) continue;
+  const source = join(distDir, 'icons', file);
+  const target = source.replace('.vue.d.ts', '.d.ts');
+  renameSync(source, target);
+  declarationFiles.push(target);
+}
+for (const file of declarationFiles) {
+  writeFileSync(file, readFileSync(file, 'utf8').replaceAll('.vue', '.js'));
+}
+
+cpSync(join(distDir, 'index.d.ts'), join(distDir, 'cjs', 'index.d.ts'));
+cpSync(join(distDir, 'icons'), join(distDir, 'cjs', 'icons'), {
+  recursive: true,
+  filter: (source) => !source.endsWith('.js'),
+});
+writeFileSync(join(distDir, 'cjs', 'package.json'), '{"type":"commonjs"}\n');
 console.log(`vue: ${icons.length} icon components built`);
