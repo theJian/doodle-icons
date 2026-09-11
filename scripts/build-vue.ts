@@ -1,9 +1,6 @@
 import {
   cpSync,
   mkdirSync,
-  readFileSync,
-  readdirSync,
-  renameSync,
   rmSync,
   writeFileSync,
 } from 'node:fs';
@@ -51,19 +48,6 @@ const viteConfig = join(pkgDir, 'vite.config.ts');
 await build({ configFile: viteConfig, mode: 'icons' });
 await build({ configFile: viteConfig, mode: 'index' });
 await $`node ${fileURLToPath(import.meta.resolve('vue-tsc/bin/vue-tsc.js'))} --project ${join(pkgDir, 'tsconfig.build.json')}`;
-
-// Published modules are .js, so their declarations must use the same specifiers.
-const declarationFiles = [join(distDir, 'index.d.ts')];
-for (const file of readdirSync(join(distDir, 'icons'))) {
-  if (!file.endsWith('.vue.d.ts')) continue;
-  const source = join(distDir, 'icons', file);
-  const target = source.replace('.vue.d.ts', '.d.ts');
-  renameSync(source, target);
-  declarationFiles.push(target);
-}
-for (const file of declarationFiles) {
-  writeFileSync(file, readFileSync(file, 'utf8').replaceAll('.vue', '.js'));
-}
 
 cpSync(join(distDir, 'index.d.ts'), join(distDir, 'cjs', 'index.d.ts'));
 cpSync(join(distDir, 'icons'), join(distDir, 'cjs', 'icons'), {

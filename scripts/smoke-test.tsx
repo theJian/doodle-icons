@@ -84,12 +84,16 @@ ok(vueHtml.toLowerCase().includes('rebeccapurple'), 'vue: color prop');
 ok(vueHtml.includes('viewBox="0 0 160 154"'), 'vue: viewBox preserved');
 const vueDist = join(import.meta.dir, '..', 'packages', 'vue', 'dist');
 ok(
-  readFileSync(join(vueDist, 'icons', 'Search.js'), 'utf8').includes('createElementBlock'),
+  readFileSync(join(vueDist, 'icons', 'Search.vue.js'), 'utf8').includes(
+    'createElementBlock',
+  ),
   'vue: SFC template compiled to optimized render helpers',
 );
 ok(
-  readFileSync(join(vueDist, 'index.d.ts'), 'utf8').includes("from './icons/Search.js'"),
-  'vue: declarations reference compiled modules',
+  readFileSync(join(vueDist, 'index.d.ts'), 'utf8').includes(
+    "from './icons/Search.vue'",
+  ),
+  'vue: declarations preserve SFC module names',
 );
 const { Search: CjsVueSearch } = require('../packages/vue/dist/cjs/index.js') as {
   Search: typeof VueSearch;

@@ -21,7 +21,8 @@ for (const framework of ['react', 'vue', 'react-native']) {
   const includedIcons = Object.entries(output.inputs)
     .filter(([path, info]) => path.includes('/dist/icons/') && info.bytesInOutput > 0)
     .map(([path]) => path.split('/').pop());
-  assert.deepEqual(includedIcons, ['Rocket.js'], `${framework}: Rocket must include only Rocket`);
+  const expectedIcon = framework === 'vue' ? 'Rocket.vue.js' : 'Rocket.js';
+  assert.deepEqual(includedIcons, [expectedIcon], `${framework}: Rocket must include only Rocket`);
   assert.ok(output.bytes > 0);
   console.log(`${framework}: Rocket retains only Rocket (${output.bytes} bytes, frameworks excluded)`);
 }

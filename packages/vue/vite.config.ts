@@ -7,10 +7,7 @@ const srcDir = join(import.meta.dirname, 'src');
 const iconEntries = Object.fromEntries(
   readdirSync(join(srcDir, 'icons'))
     .filter((file) => file.endsWith('.vue'))
-    .map((file) => [
-      `icons/${basename(file, '.vue')}`,
-      join(srcDir, 'icons', file),
-    ]),
+    .map((file) => [`icons/${file}`, join(srcDir, 'icons', file)]),
 );
 
 const output = (format: 'es' | 'cjs', dir: string) => ({
@@ -19,7 +16,7 @@ const output = (format: 'es' | 'cjs', dir: string) => ({
   entryFileNames: '[name].js',
   chunkFileNames: '_chunks/[name]-[hash].js',
   paths: (id: string) =>
-    id.endsWith('.vue') ? `./icons/${basename(id, '.vue')}.js` : id,
+    id.endsWith('.vue') ? `./icons/${basename(id)}.js` : id,
 });
 
 export default defineConfig(({ mode }) => {
