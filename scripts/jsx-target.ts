@@ -1,4 +1,5 @@
 import type { CustomPlugin, XastElement } from 'svgo';
+import possibleStandardNames from './jsx-attribute-mappings.ts';
 
 export type JsxTarget = 'react-dom' | 'react-native-svg';
 
@@ -11,16 +12,21 @@ const REACT_NATIVE_TAGS: Record<string, string> = {
   rect: 'Rect',
 };
 
-function jsxAttributeName(name: string): string {
+function reactDomAttributeName(name: string): string {
+  return (possibleStandardNames as Record<string, string>)[name.toLowerCase()] ?? name;
+}
+
+function reactNativeAttributeName(name: string): string {
   if (name === 'class') return 'className';
   if (name.startsWith('aria-') || name.startsWith('data-')) return name;
   // JSX camel-cases SVG and namespaced attributes, except aria-* and data-*.
   return name.replaceAll(/[-:]([a-z])/g, (_match, letter: string) => letter.toUpperCase());
 }
 
-function renameAttributes(node: XastElement): void {
+function renameAttributes(node: XastElement, target: JsxTarget): void {
+  const attributeName = target === 'react-dom' ? reactDomAttributeName : reactNativeAttributeName;
   node.attributes = Object.fromEntries(
-    Object.entries(node.attributes).map(([name, value]) => [jsxAttributeName(name), value]),
+    Object.entries(node.attributes).map(([name, value]) => [attributeName(name), value]),
   );
 }
 
@@ -37,7 +43,7 @@ export function jsxTargetPlugin(target: JsxTarget, sourceFile: string): CustomPl
             }
             node.name = component;
           }
-          renameAttributes(node);
+          renameAttributes(node, target);
         },
       },
     }),
