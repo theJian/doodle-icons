@@ -47,6 +47,11 @@ function serializeAttributes(attributes: Record<string, string>, svgProps?: SvgP
     .join('');
 }
 
+function unexpectedNode(node: never): never {
+  const type = String((node as { type?: unknown }).type);
+  throw new Error(`Unexpected XAST node type "${type}"`);
+}
+
 function serializeNode(
   node: XastNode,
   components: Components,
@@ -75,6 +80,8 @@ function serializeNode(
     case 'doctype':
     case 'instruction':
       return '';
+    default:
+      return unexpectedNode(node);
   }
 }
 
