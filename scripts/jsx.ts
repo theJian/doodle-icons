@@ -5,7 +5,7 @@ import type { IconDef } from './lib.ts';
 type SvgProps = Record<string, string | null>;
 type Components = Set<string>;
 
-function optimizationPlugins(componentName: string): NonNullable<Config['plugins']> {
+function optimizationPlugins(componentName: string, target: JsxTarget): NonNullable<Config['plugins']> {
   return [
     {
       name: 'preset-default',
@@ -13,6 +13,9 @@ function optimizationPlugins(componentName: string): NonNullable<Config['plugins
         overrides: {
           cleanupIds: false,
           convertColors: { currentColor: 'black' },
+          ...(target === 'react-native-svg'
+            ? { inlineStyles: { onlyMatchedOnce: false } }
+            : {}),
         },
       },
     },
@@ -88,7 +91,7 @@ function optimizeIcon(def: IconDef, target: JsxTarget): XastRoot {
   optimize(def.rawSvg, {
     path: sourceFile,
     plugins: [
-      ...optimizationPlugins(def.pascalName),
+      ...optimizationPlugins(def.pascalName, target),
       jsxTargetPlugin(target, sourceFile),
       extractPlugin,
     ],
