@@ -1,8 +1,7 @@
 import assert from 'node:assert/strict';
-import { convertIconToJsx } from './jsx.ts';
+import { convertIconToJsx, convertIconToVueSvg } from './codegen.ts';
 import { scanIcons } from './lib.ts';
 import { renderVueTemplate } from './template.ts';
-import { convertIconToVueSvg } from './vue.ts';
 
 const search = scanIcons().find(({ pascalName }) => pascalName === 'Search');
 assert.ok(search, 'Search icon fixture must exist');

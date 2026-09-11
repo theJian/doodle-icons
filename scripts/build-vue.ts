@@ -1,9 +1,9 @@
 import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { buildVuePackage } from './build-vue-package.ts';
+import { convertIconToVueSvg } from './codegen.ts';
 import { scanIcons, type IconDef } from './lib.ts';
 import { renderTemplate, renderVueTemplate } from './template.ts';
-import { convertIconToVueSvg } from './vue.ts';
 
 const pkgDir = join(import.meta.dir, '..', 'packages', 'vue');
 const srcDir = join(pkgDir, 'src');

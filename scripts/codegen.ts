@@ -1,10 +1,57 @@
-import { type CustomPlugin, type XastNode, type XastRoot } from 'svgo';
+import {
+  optimize,
+  type Config,
+  type CustomPlugin,
+  type XastNode,
+  type XastRoot,
+} from 'svgo';
 import { jsxTargetPlugin, type JsxTarget } from './jsx-target.ts';
 import type { IconDef } from './lib.ts';
-import { optimizeSvg } from './svg.ts';
 
+export type CodegenTarget = JsxTarget | 'vue';
 type SvgProps = Record<string, string | null>;
 type Components = Set<string>;
+
+function optimizationPlugins(
+  componentName: string,
+  target: CodegenTarget,
+): NonNullable<Config['plugins']> {
+  return [
+    {
+      name: 'preset-default',
+      params: {
+        overrides: {
+          cleanupIds: false,
+          convertColors: { currentColor: 'black' },
+          ...(target === 'react-native-svg'
+            ? { inlineStyles: { onlyMatchedOnce: false } }
+            : {}),
+        },
+      },
+    },
+    { name: 'removeXMLNS' },
+    {
+      name: 'prefixIds',
+      params: {
+        prefix: componentName,
+        delim: '-',
+        prefixClassNames: false,
+      },
+    },
+  ];
+}
+
+/** Run the shared icon optimization pipeline, followed by target-specific plugins. */
+export function optimizeIcon(
+  def: IconDef,
+  target: CodegenTarget,
+  plugins: CustomPlugin[] = [],
+) {
+  return optimize(def.rawSvg, {
+    path: `${def.category}/${def.kebabName}.svg`,
+    plugins: [...optimizationPlugins(def.pascalName, target), ...plugins],
+  });
+}
 
 function serializeAttributes(attributes: Record<string, string>, svgProps?: SvgProps): string {
   const props = new Map<string, string | null>(Object.entries(attributes));
@@ -70,7 +117,7 @@ function optimizeIconToXast(def: IconDef, target: JsxTarget): XastRoot {
   };
 
   const sourceFile = `${def.category}/${def.kebabName}.svg`;
-  optimizeSvg(def, target, [jsxTargetPlugin(target, sourceFile), extractPlugin]);
+  optimizeIcon(def, target, [jsxTargetPlugin(target, sourceFile), extractPlugin]);
   if (optimized === undefined) throw new Error(`SVGO did not produce an AST for ${sourceFile}`);
   return optimized;
 }
@@ -80,4 +127,13 @@ export function convertIconToJsx(def: IconDef, target: JsxTarget, svgProps: SvgP
   const components: Components = new Set();
   const jsx = serializeNode(optimizeIconToXast(def, target), components, svgProps);
   return { jsx, components: [...components] };
+}
+
+/** Optimize an icon and add the bindings consumed by the generated Vue SFC. */
+export function convertIconToVueSvg(def: IconDef): string {
+  const svg = optimizeIcon(def, 'vue').data;
+  return svg.replace(/^<svg\b([^>]*)>/, (_tag, attributes: string) => {
+    const staticAttributes = attributes.replace(/\s(?:width|height)="[^"]*"/g, '');
+    return `<svg${staticAttributes} :width="size" :height="size" aria-hidden="true" :style="{ color }" v-bind="$attrs">`;
+  });
 }
