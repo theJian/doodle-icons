@@ -37,3 +37,10 @@ export async function renderTypeScriptTemplate(
 ): Promise<string> {
   return format(renderTemplate(name, values), { parser: 'typescript', singleQuote: true });
 }
+
+export async function renderVueTemplate(
+  name: string,
+  values: Record<string, string> = {},
+): Promise<string> {
+  return format(renderTemplate(name, values), { parser: 'vue', singleQuote: true });
+}

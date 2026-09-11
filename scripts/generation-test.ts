@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict';
 import { convertIconToJsx } from './jsx.ts';
 import { scanIcons } from './lib.ts';
+import { renderVueTemplate } from './template.ts';
+import { convertIconToVueSvg } from './vue.ts';
 
 const search = scanIcons().find(({ pascalName }) => pascalName === 'Search');
 assert.ok(search, 'Search icon fixture must exist');
@@ -26,4 +28,17 @@ assert.match(reactNative.jsx, /<Svg[^>]* color=\{color\}/);
 assert.match(reactNative.jsx, /\{\.\.\.props\}/);
 assert.match(reactNative.jsx, /<Path fill="currentColor"/);
 
-console.log('generation tests passed: optimized React + React Native JSX');
+const vueSvg = convertIconToVueSvg(search);
+const vue = await renderVueTemplate('vue-icon.vue.template', {
+  componentName: search.pascalName,
+  svg: vueSvg,
+});
+assert.match(vue, /<script lang="ts">/);
+assert.match(vue, /<template>/);
+assert.match(vue, /fill="currentColor"/);
+assert.match(vue, /clip-path="url\(#Search-clip0\)"/);
+assert.match(vue, /:width="size"/);
+assert.match(vue, /v-bind="\$attrs"/);
+assert.ok(vueSvg.length < search.rawSvg.length, 'SVGO should reduce the Vue SVG size');
+
+console.log('generation tests passed: optimized React, React Native, and Vue sources');
