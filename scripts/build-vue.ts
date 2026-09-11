@@ -5,7 +5,6 @@ import {
   writeFileSync,
 } from 'node:fs';
 import { join } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { $ } from 'bun';
 import { build } from 'vite';
 import { convertIconToVueSvg } from './codegen.ts';
@@ -47,7 +46,7 @@ rmSync(distDir, { recursive: true, force: true });
 const viteConfig = join(pkgDir, 'vite.config.ts');
 await build({ configFile: viteConfig, mode: 'icons' });
 await build({ configFile: viteConfig, mode: 'index' });
-await $`node ${fileURLToPath(import.meta.resolve('vue-tsc/bin/vue-tsc.js'))} --project ${join(pkgDir, 'tsconfig.build.json')}`;
+await $`bunx vue-tsc --project ${join(pkgDir, 'tsconfig.build.json')}`;
 
 cpSync(join(distDir, 'index.d.ts'), join(distDir, 'cjs', 'index.d.ts'));
 cpSync(join(distDir, 'icons'), join(distDir, 'cjs', 'icons'), {
