@@ -40,7 +40,7 @@ import { DoodleIconProvider, Rocket } from '@doodle-icons/react';
 </DoodleIconProvider>;
 ```
 
-Every icon also has a `...Icon` alias (`RocketIcon`), accepts all `SVGProps`, and is tree-shakable.
+Every icon accepts all `SVGProps` and is tree-shakable.
 
 ### React Native
 
@@ -52,6 +52,16 @@ bun add @doodle-icons/react-native react-native-svg
 import { Rocket } from '@doodle-icons/react-native';
 
 <Rocket size={64} color="hotpink" />;
+```
+
+React Native exposes the same provider API as React:
+
+```tsx
+import { DoodleIconProvider, Rocket } from '@doodle-icons/react-native';
+
+<DoodleIconProvider size={24} color="hotpink">
+  <Rocket />
+</DoodleIconProvider>;
 ```
 
 ### Vue 3

@@ -1,0 +1,31 @@
+"use client";
+
+import * as React from 'react';
+
+export type DoodleIconConfig = {
+  size?: number | string;
+  color?: string;
+};
+
+const DoodleIconContext = React.createContext<DoodleIconConfig>({});
+
+export function DoodleIconProvider({
+  children,
+  ...config
+}: DoodleIconConfig & { children?: React.ReactNode }) {
+  return (
+    <DoodleIconContext.Provider value={config}>
+      {children}
+    </DoodleIconContext.Provider>
+  );
+}
+
+export function useIconProps(): Required<DoodleIconConfig> {
+  const config = React.useContext(DoodleIconContext);
+  return { size: 24, color: 'currentColor', ...config };
+}
+
+export type DoodleIconProps = Omit<React.SVGProps<SVGSVGElement>, 'fill'> & {
+  size?: number | string;
+  color?: string;
+};

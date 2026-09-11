@@ -1,0 +1,15 @@
+"use client";
+
+import * as React from 'react';
+import { useIconProps, type DoodleIconProps } from '../context.js';
+
+export type ${componentName}Props = DoodleIconProps;
+
+export const ${componentName} = React.forwardRef<SVGSVGElement, ${componentName}Props>(
+  function ${componentName}(passedProps, forwardedRef) {
+    const { size, color, ...props } = { ...useIconProps(), ...passedProps };
+    return (
+      ${jsx}
+    );
+  },
+);

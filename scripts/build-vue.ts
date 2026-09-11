@@ -68,7 +68,6 @@ for (const def of icons) {
   writeFileSync(join(iconsDir, `${def.pascalName}.ts`), iconComponent(def));
   exports.push(
     `export { ${def.pascalName}, type ${def.pascalName}Props } from './icons/${def.pascalName}.js';`,
-    `export { ${def.pascalName} as ${def.pascalName}Icon } from './icons/${def.pascalName}.js';`,
   );
 }
 writeFileSync(join(srcDir, 'index.ts'), `${exports.join('\n')}\n`);

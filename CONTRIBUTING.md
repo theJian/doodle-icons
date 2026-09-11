@@ -5,6 +5,7 @@
 ```
 icons/                  ← source SVGs organized by category
 scripts/                ← generators that build the packages from icons/
+  templates/            ← source templates for generated React modules
 packages/
   react/                ← @doodle-icons/react
   react-native/         ← @doodle-icons/react-native
@@ -26,7 +27,7 @@ bun install
 
 bun run build              # generate and compile all packages
 bun run build:react        # individual targets: react | react-native | vue | flutter | metadata
-bun scripts/smoke-test.tsx # SSR smoke test for React and Vue packages
+bun run test               # generation, rendering, and tree-shaking checks
 bun run dev:site           # run the documentation site with hot reload
 bun run build:site         # build the production site
 ```

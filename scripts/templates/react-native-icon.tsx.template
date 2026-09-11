@@ -1,0 +1,12 @@
+import * as React from 'react';
+import { ${components} } from 'react-native-svg';
+import { useIconProps, type DoodleIconProps } from '../context.js';
+
+export type ${componentName}Props = DoodleIconProps;
+
+export const ${componentName} = function ${componentName}(passedProps: ${componentName}Props) {
+  const { size, color, ...props } = { ...useIconProps(), ...passedProps };
+  return (
+    ${jsx}
+  );
+};

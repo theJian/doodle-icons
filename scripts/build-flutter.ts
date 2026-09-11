@@ -36,7 +36,7 @@ const icons: IconDef[] = scanIcons();
 rmSync(libDir, { recursive: true, force: true });
 mkdirSync(srcDir, { recursive: true });
 
-const exports = ['library doodle_icons;'];
+const exports: string[] = [];
 for (const def of icons) {
   writeFileSync(join(srcDir, `${def.snakeName}.dart`), iconTemplate(def.pascalName, flutterSvg(def)));
   exports.push(`export 'src/${def.snakeName}.dart';`);
