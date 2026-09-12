@@ -1,4 +1,5 @@
 import { basename, join } from 'node:path';
+import dts from 'unplugin-dts/vite';
 import { defineConfig } from 'vite';
 
 const pkgDir = import.meta.dirname;
@@ -6,6 +7,15 @@ const pkgDir = import.meta.dirname;
 export default defineConfig({
   logLevel: 'warn',
   root: pkgDir,
+  plugins: [
+    dts({
+      processor: 'vue',
+      tsconfigPath: join(pkgDir, 'tsconfig.json'),
+      entryRoot: join(pkgDir, 'src'),
+      outDirs: [join(pkgDir, 'dist'), join(pkgDir, 'dist', 'cjs')],
+      aliases: [{ find: /\.vue$/, replacement: '.vue.js' }],
+    }),
+  ],
   build: {
     copyPublicDir: false,
     emptyOutDir: false,
