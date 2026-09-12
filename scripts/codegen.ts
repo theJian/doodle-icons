@@ -1,11 +1,21 @@
-import { optimize, type Config, type CustomPlugin, type XastNode, type XastRoot } from 'svgo';
+import {
+  optimize,
+  type Config,
+  type CustomPlugin,
+  type XastNode,
+  type XastRoot,
+} from 'svgo';
 import { jsxTargetPlugin, type JsxTarget } from './jsx-target.ts';
 import type { IconDef } from './lib.ts';
 
+export type CodegenTarget = JsxTarget | 'vue';
 type SvgProps = Record<string, string | null>;
 type Components = Set<string>;
 
-function optimizationPlugins(componentName: string, target: JsxTarget): NonNullable<Config['plugins']> {
+function optimizationPlugins(
+  componentName: string,
+  target: CodegenTarget,
+): NonNullable<Config['plugins']> {
   return [
     {
       name: 'preset-default',
@@ -29,6 +39,19 @@ function optimizationPlugins(componentName: string, target: JsxTarget): NonNulla
       },
     },
   ];
+}
+
+/** Run the shared icon optimization pipeline, followed by target-specific plugins. */
+export function optimizeIcon(
+  def: IconDef,
+  target: CodegenTarget,
+  sourceFile: string,
+  plugins: CustomPlugin[] = [],
+) {
+  return optimize(def.rawSvg, {
+    path: sourceFile,
+    plugins: [...optimizationPlugins(def.pascalName, target), ...plugins],
+  });
 }
 
 function serializeAttributes(attributes: Record<string, string>, svgProps?: SvgProps): string {
@@ -85,8 +108,7 @@ function serializeNode(
   }
 }
 
-function optimizeIcon(def: IconDef, target: JsxTarget): XastRoot {
-  const sourceFile = `${def.category}/${def.kebabName}.svg`;
+function optimizeIconToXast(def: IconDef, target: JsxTarget): XastRoot {
   let optimized: XastRoot | undefined;
   const extractPlugin: CustomPlugin = {
     name: 'doodle-icons-extract-xast',
@@ -95,14 +117,8 @@ function optimizeIcon(def: IconDef, target: JsxTarget): XastRoot {
     },
   };
 
-  optimize(def.rawSvg, {
-    path: sourceFile,
-    plugins: [
-      ...optimizationPlugins(def.pascalName, target),
-      jsxTargetPlugin(target, sourceFile),
-      extractPlugin,
-    ],
-  });
+  const sourceFile = `${def.category}/${def.kebabName}.svg`;
+  optimizeIcon(def, target, sourceFile, [jsxTargetPlugin(target, sourceFile), extractPlugin]);
   if (optimized === undefined) throw new Error(`SVGO did not produce an AST for ${sourceFile}`);
   return optimized;
 }
@@ -110,6 +126,16 @@ function optimizeIcon(def: IconDef, target: JsxTarget): XastRoot {
 /** Optimize an icon with SVGO, then serialize its XAST as framework-specific JSX. */
 export function convertIconToJsx(def: IconDef, target: JsxTarget, svgProps: SvgProps) {
   const components: Components = new Set();
-  const jsx = serializeNode(optimizeIcon(def, target), components, svgProps);
+  const jsx = serializeNode(optimizeIconToXast(def, target), components, svgProps);
   return { jsx, components: [...components] };
+}
+
+/** Optimize an icon and add the bindings consumed by the generated Vue SFC. */
+export function convertIconToVueSvg(def: IconDef): string {
+  const sourceFile = `${def.category}/${def.kebabName}.svg`;
+  const svg = optimizeIcon(def, 'vue', sourceFile).data;
+  return svg.replace(/^<svg\b([^>]*)>/, (_tag, attributes: string) => {
+    const staticAttributes = attributes.replace(/\s(?:width|height)="[^"]*"/g, '');
+    return `<svg${staticAttributes} :width="size" :height="size" aria-hidden="true" :style="{ color }" v-bind="$attrs">`;
+  });
 }

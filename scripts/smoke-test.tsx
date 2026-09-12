@@ -1,4 +1,5 @@
 import { readFileSync } from 'node:fs';
+import { createRequire } from 'node:module';
 import { join } from 'node:path';
 import { renderToString } from 'react-dom/server';
 import { Search, DoodleIconProvider, Rocket } from '../packages/react/dist/index.js';
@@ -10,6 +11,8 @@ import { Search as VueSearch } from '../packages/vue/dist/index.js';
 import { renderToString as vueRenderToString } from '@vue/server-renderer';
 import { h } from 'vue';
 import metadata from '../packages/metadata/icons.json';
+
+const require = createRequire(import.meta.url);
 
 function ok(condition: unknown, message: string): void {
   if (!condition) throw new Error(`FAIL: ${message}`);
@@ -79,5 +82,23 @@ ok(vueHtml.includes('currentColor'), 'vue: recolorable fills');
 ok(vueHtml.includes('width="32"'), 'vue: size prop');
 ok(vueHtml.toLowerCase().includes('rebeccapurple'), 'vue: color prop');
 ok(vueHtml.includes('viewBox="0 0 160 154"'), 'vue: viewBox preserved');
+const vueDist = join(import.meta.dir, '..', 'packages', 'vue', 'dist');
+ok(
+  readFileSync(join(vueDist, 'icons', 'Search.vue.js'), 'utf8').includes(
+    'createElementBlock',
+  ),
+  'vue: SFC template compiled to optimized render helpers',
+);
+ok(
+  readFileSync(join(vueDist, 'index.d.ts'), 'utf8').includes(
+    "from './icons/Search.vue.js'",
+  ),
+  'vue: declaration barrel uses NodeNext-compatible runtime specifiers',
+);
+const { Search: CjsVueSearch } = require('../packages/vue/dist/cjs/index.js') as {
+  Search: typeof VueSearch;
+};
+const cjsVueHtml = await vueRenderToString(h(CjsVueSearch, { size: 20 }));
+ok(cjsVueHtml.includes('width="20"'), 'vue: CommonJS build renders');
 
 console.log('smoke tests passed: metadata + react + react-native + vue');

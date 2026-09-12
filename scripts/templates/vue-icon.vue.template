@@ -1,0 +1,19 @@
+<script lang="ts">
+import { defineComponent, type SVGAttributes } from 'vue';
+
+export type ${componentName}Props = SVGAttributes & {
+  size?: number | string;
+  color?: string;
+};
+
+export default defineComponent({
+  name: '${componentName}',
+  inheritAttrs: false,
+  props: {
+    size: { type: [Number, String], default: 24 },
+    color: { type: String, default: 'currentColor' },
+  },
+});
+</script>
+
+<template>${svg}</template>

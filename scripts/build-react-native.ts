@@ -1,7 +1,7 @@
 import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { buildPackage } from './build-package.ts';
-import { convertIconToJsx } from './jsx.ts';
+import { convertIconToJsx } from './codegen.ts';
 import { scanIcons, type IconDef } from './lib.ts';
 import { renderTemplate, renderTypeScriptTemplate } from './template.ts';
 

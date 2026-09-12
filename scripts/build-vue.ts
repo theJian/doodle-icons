@@ -1,61 +1,20 @@
 import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { buildPackage } from './build-package.ts';
-import { scanIcons, uniquifyIds, type IconDef, type IconNode } from './lib.ts';
+import { build } from 'vite';
+import { convertIconToVueSvg } from './codegen.ts';
+import { scanIcons, type IconDef } from './lib.ts';
+import { renderTemplate, renderVueTemplate } from './template.ts';
 
 const pkgDir = join(import.meta.dir, '..', 'packages', 'vue');
 const srcDir = join(pkgDir, 'src');
 const iconsDir = join(srcDir, 'icons');
+const distDir = join(pkgDir, 'dist');
 
-function toH(node: IconNode, indent: string): string {
-  const attrs = Object.entries(node.attrs)
-    .map(([k, v]) => {
-      const key = k.includes('-') ? `'${k}'` : k;
-      return `${key}: '${v.replace(/\\/g, '\\\\').replace(/'/g, "\\'")}'`;
-    })
-    .join(', ');
-  if (node.children.length === 0) {
-    return `${indent}h('${node.tag}', { ${attrs} })`;
-  }
-  const children = node.children.map((c) => toH(c, `${indent}  `)).join(',\n');
-  return `${indent}h('${node.tag}', { ${attrs} }, [\n${children},\n${indent}])`;
-}
-
-function iconComponent(def: IconDef): string {
-  uniquifyIds(def.nodes, def.pascalName);
-  const inner = def.nodes.map((n) => toH(n, '        ')).join(',\n');
-  return `import { defineComponent, h, type SVGAttributes } from 'vue';
-
-export type ${def.pascalName}Props = SVGAttributes & {
-  size?: number | string;
-  color?: string;
-};
-
-export const ${def.pascalName} = defineComponent({
-  name: '${def.pascalName}',
-  props: {
-    size: { type: [Number, String], default: 24 },
-    color: { type: String, default: 'currentColor' },
-  },
-  setup(props, { attrs }) {
-    return () =>
-      h(
-        'svg',
-        {
-          viewBox: '${def.viewBox}',
-          width: props.size,
-          height: props.size,
-          'aria-hidden': 'true',
-          style: { color: props.color },
-          ...attrs,
-        },
-        [
-${inner},
-        ],
-      );
-  },
-});
-`;
+async function iconComponent(def: IconDef): Promise<string> {
+  return renderVueTemplate('vue-icon.vue.template', {
+    componentName: def.pascalName,
+    svg: convertIconToVueSvg(def),
+  });
 }
 
 const icons = scanIcons();
@@ -65,12 +24,20 @@ mkdirSync(iconsDir, { recursive: true });
 
 const exports: string[] = [];
 for (const def of icons) {
-  writeFileSync(join(iconsDir, `${def.pascalName}.ts`), iconComponent(def));
+  writeFileSync(
+    join(iconsDir, `${def.pascalName}.vue`),
+    await iconComponent(def),
+  );
   exports.push(
-    `export { ${def.pascalName}, type ${def.pascalName}Props } from './icons/${def.pascalName}.js';`,
+    renderTemplate('vue-icon-exports.ts.template', {
+      componentName: def.pascalName,
+    }).trim(),
   );
 }
 writeFileSync(join(srcDir, 'index.ts'), `${exports.join('\n')}\n`);
 
-await buildPackage(pkgDir);
+rmSync(distDir, { recursive: true, force: true });
+await build({ configFile: join(pkgDir, 'vite.config.icons.ts') });
+await build({ configFile: join(pkgDir, 'vite.config.index.ts') });
+writeFileSync(join(distDir, 'cjs', 'package.json'), '{"type":"commonjs"}\n');
 console.log(`vue: ${icons.length} icon components built`);
