@@ -23,9 +23,7 @@ export default defineConfig({
           entryFileNames: '[name].js',
           chunkFileNames: '_chunks/[name]-[hash].js',
           paths: (id) =>
-            id.endsWith('.vue')
-              ? `./icons/${basename(id, '.vue')}.js`
-              : id,
+            id.endsWith('.vue') ? `./icons/${basename(id)}.js` : id,
         },
         {
           format: 'cjs',
@@ -33,9 +31,7 @@ export default defineConfig({
           entryFileNames: '[name].js',
           chunkFileNames: '_chunks/[name]-[hash].js',
           paths: (id) =>
-            id.endsWith('.vue')
-              ? `./icons/${basename(id, '.vue')}.js`
-              : id,
+            id.endsWith('.vue') ? `./icons/${basename(id)}.js` : id,
         },
       ],
     },
