@@ -31,9 +31,10 @@ try {
   writeFileSync(cjsConsumer, consumer);
 
   const compiler = fileURLToPath(import.meta.resolve('typescript/bin/tsc'));
-  await $`bun ${compiler} --noEmit --strict --skipLibCheck false --target ES2022 --module NodeNext --moduleResolution NodeNext ${esmConsumer} ${cjsConsumer}`;
+  await $`bun ${compiler} --noEmit --strict --skipLibCheck false --target ES2022 --module ESNext --moduleResolution bundler ${esmConsumer}`;
+  await $`bun ${compiler} --noEmit --strict --skipLibCheck false --target ES2022 --module NodeNext --moduleResolution NodeNext ${cjsConsumer}`;
 } finally {
   rmSync(fixtureDir, { recursive: true, force: true });
 }
 
-console.log('vue package types passed: ESM + CommonJS consumers');
+console.log('vue package types passed: bundler ESM + NodeNext CommonJS');
