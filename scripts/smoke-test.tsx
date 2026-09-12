@@ -91,9 +91,9 @@ ok(
 );
 ok(
   readFileSync(join(vueDist, 'index.d.ts'), 'utf8').includes(
-    "from './icons/Search.vue'",
+    "from './icons/Search.vue.js'",
   ),
-  'vue: declarations preserve SFC module names',
+  'vue: declarations target compiled SFC module names',
 );
 const { Search: CjsVueSearch } = require('../packages/vue/dist/cjs/index.js') as {
   Search: typeof VueSearch;
