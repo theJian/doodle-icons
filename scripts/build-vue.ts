@@ -18,10 +18,15 @@ async function iconComponent(def: IconDef): Promise<string> {
   });
 }
 
-function iconExports(def: IconDef, moduleExtension: string): string {
+function iconExports(def: IconDef): string {
   return renderTemplate('vue-icon-exports.ts.template', {
     componentName: def.pascalName,
-    moduleExtension,
+  }).trim();
+}
+
+function iconDeclarationExports(def: IconDef): string {
+  return renderTemplate('vue-icon-declaration-exports.d.ts.template', {
+    componentName: def.pascalName,
   }).trim();
 }
 
@@ -37,8 +42,8 @@ for (const def of icons) {
     join(iconsDir, `${def.pascalName}.vue`),
     await iconComponent(def),
   );
-  sourceExports.push(iconExports(def, '.vue'));
-  declarationExports.push(iconExports(def, '.vue.js'));
+  sourceExports.push(iconExports(def));
+  declarationExports.push(iconDeclarationExports(def));
 }
 writeFileSync(join(srcDir, 'index.ts'), `${sourceExports.join('\n')}\n`);
 const declarationIndex = `${declarationExports.join('\n')}\n`;
