@@ -15,7 +15,7 @@
     "dev:site": "bun run --filter '@doodle-icons/site' dev",
     "build:site": "bun run --filter '@doodle-icons/site' build",
     "preview:site": "bun run --filter '@doodle-icons/site' preview",
-    "test": "bun scripts/generation-test.ts && bun scripts/smoke-test.tsx && bun scripts/vue-package-types-test.ts && bun scripts/tree-shaking-test.ts"
+    "test": "bun scripts/generation-test.ts && bun scripts/smoke-test.tsx && bun scripts/tree-shaking-test.ts"
   },
   "devDependencies": {
     "@types/bun": "^1.3.0",

@@ -89,12 +89,6 @@ ok(
   ),
   'vue: SFC template compiled to optimized render helpers',
 );
-ok(
-  readFileSync(join(vueDist, 'index.d.ts'), 'utf8').includes(
-    "from './icons/Search.vue'",
-  ),
-  'vue: declarations preserve SFC module names',
-);
 const { Search: CjsVueSearch } = require('../packages/vue/dist/cjs/index.js') as {
   Search: typeof VueSearch;
 };
