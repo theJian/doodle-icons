@@ -84,7 +84,7 @@ ok(vueHtml.toLowerCase().includes('rebeccapurple'), 'vue: color prop');
 ok(vueHtml.includes('viewBox="0 0 160 154"'), 'vue: viewBox preserved');
 const vueDist = join(import.meta.dir, '..', 'packages', 'vue', 'dist');
 ok(
-  readFileSync(join(vueDist, 'icons', 'Search.vue.js'), 'utf8').includes(
+  readFileSync(join(vueDist, 'icons', 'Search.js'), 'utf8').includes(
     'createElementBlock',
   ),
   'vue: SFC template compiled to optimized render helpers',

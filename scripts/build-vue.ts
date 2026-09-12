@@ -1,4 +1,11 @@
-import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
+import {
+  mkdirSync,
+  readFileSync,
+  readdirSync,
+  renameSync,
+  rmSync,
+  writeFileSync,
+} from 'node:fs';
 import { join } from 'node:path';
 import { $ } from 'bun';
 import { build } from 'vite';
@@ -16,6 +23,31 @@ async function iconComponent(def: IconDef): Promise<string> {
     componentName: def.pascalName,
     svg: convertIconToVueSvg(def),
   });
+}
+
+function normalizeDeclarationOutput(outDir: string, expectedIcons: number): void {
+  const declarationIconsDir = join(outDir, 'icons');
+  const vueDeclarations = readdirSync(declarationIconsDir).filter((file) =>
+    file.endsWith('.vue.d.ts'),
+  );
+  if (vueDeclarations.length !== expectedIcons) {
+    throw new Error(
+      `Expected ${expectedIcons} Vue declarations, found ${vueDeclarations.length}`,
+    );
+  }
+  for (const file of vueDeclarations) {
+    renameSync(
+      join(declarationIconsDir, file),
+      join(declarationIconsDir, file.replace(/\.vue\.d\.ts$/, '.d.ts')),
+    );
+  }
+
+  const indexPath = join(outDir, 'index.d.ts');
+  const declaration = readFileSync(indexPath, 'utf8');
+  writeFileSync(
+    indexPath,
+    declaration.replace(/(from\s+['"][^'"]+)\.vue(['"])/g, '$1.js$2'),
+  );
 }
 
 const icons = scanIcons();
@@ -45,6 +77,7 @@ for (const format of ['esm', 'cjs'] as const) {
   const module = format === 'esm' ? 'ESNext' : 'CommonJS';
   const resolution = format === 'esm' ? 'bundler' : 'node';
   await $`bunx vue-tsc --project ${join(pkgDir, 'tsconfig.json')} --noEmit false --noEmitOnError --emitDeclarationOnly --declaration --rootDir ${srcDir} --outDir ${outDir} --module ${module} --moduleResolution ${resolution}`;
+  normalizeDeclarationOutput(outDir, icons.length);
 }
 writeFileSync(join(distDir, 'cjs', 'package.json'), '{"type":"commonjs"}\n');
 console.log(`vue: ${icons.length} icon components built`);

@@ -1,5 +1,5 @@
 import { readdirSync } from 'node:fs';
-import { join } from 'node:path';
+import { basename, join } from 'node:path';
 import vue from '@vitejs/plugin-vue';
 import { defineConfig } from 'vite';
 
@@ -17,7 +17,10 @@ export default defineConfig({
       entry: Object.fromEntries(
         readdirSync(iconsDir)
           .filter((file) => file.endsWith('.vue'))
-          .map((file) => [`icons/${file}`, join(iconsDir, file)]),
+          .map((file) => [
+            `icons/${basename(file, '.vue')}`,
+            join(iconsDir, file),
+          ]),
       ),
     },
     minify: false,
