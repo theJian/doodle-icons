@@ -1,9 +1,4 @@
-import {
-  cpSync,
-  mkdirSync,
-  rmSync,
-  writeFileSync,
-} from 'node:fs';
+import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { $ } from 'bun';
 import { build } from 'vite';
@@ -45,12 +40,11 @@ writeFileSync(join(srcDir, 'index.ts'), `${exports.join('\n')}\n`);
 rmSync(distDir, { recursive: true, force: true });
 await build({ configFile: join(pkgDir, 'vite.config.icons.ts') });
 await build({ configFile: join(pkgDir, 'vite.config.index.ts') });
-await $`bunx vue-tsc --project ${join(pkgDir, 'tsconfig.json')} --noEmit false --noEmitOnError --emitDeclarationOnly --declaration --rootDir ${srcDir} --outDir ${distDir}`;
-
-cpSync(join(distDir, 'index.d.ts'), join(distDir, 'cjs', 'index.d.ts'));
-cpSync(join(distDir, 'icons'), join(distDir, 'cjs', 'icons'), {
-  recursive: true,
-  filter: (source) => !source.endsWith('.js'),
-});
+for (const format of ['esm', 'cjs'] as const) {
+  const outDir = format === 'esm' ? distDir : join(distDir, 'cjs');
+  const module = format === 'esm' ? 'ESNext' : 'CommonJS';
+  const resolution = format === 'esm' ? 'bundler' : 'node';
+  await $`bunx vue-tsc --project ${join(pkgDir, 'tsconfig.json')} --noEmit false --noEmitOnError --emitDeclarationOnly --declaration --rootDir ${srcDir} --outDir ${outDir} --module ${module} --moduleResolution ${resolution}`;
+}
 writeFileSync(join(distDir, 'cjs', 'package.json'), '{"type":"commonjs"}\n');
 console.log(`vue: ${icons.length} icon components built`);
