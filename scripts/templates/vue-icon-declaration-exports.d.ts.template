@@ -1,2 +1,0 @@
-export { default as ${componentName} } from './icons/${componentName}.vue.js';
-export type { ${componentName}Props } from './icons/${componentName}.vue.js';
