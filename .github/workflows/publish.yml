@@ -73,23 +73,32 @@ jobs:
           npm pack --dry-run --workspace @doodle-icons/react-native
           npm pack --dry-run --workspace @doodle-icons/vue
 
-      - name: Publish npm packages
+      - name: Publish React package
+        working-directory: packages/react
         run: |
-          for package_dir in packages/react packages/react-native packages/vue; do
-            package_name="$(node -p "require('./${package_dir}/package.json').name")"
-            package_version="$(node -p "require('./${package_dir}/package.json').version")"
-            package_spec="${package_name}@${package_version}"
+          package_version="$(node -p "require('./package.json').version")"
+          if [[ "$(npm view "@doodle-icons/react@${package_version}" version --silent || true)" == "${package_version}" ]]; then
+            echo "@doodle-icons/react@${package_version} is already published; skipping."
+          else
+            npm publish --access public
+          fi
 
-            if registry_result="$(npm view "${package_spec}" version --json --silent)"; then
-              echo "${package_spec} is already published; skipping."
-              continue
-            fi
+      - name: Publish React Native package
+        working-directory: packages/react-native
+        run: |
+          package_version="$(node -p "require('./package.json').version")"
+          if [[ "$(npm view "@doodle-icons/react-native@${package_version}" version --silent || true)" == "${package_version}" ]]; then
+            echo "@doodle-icons/react-native@${package_version} is already published; skipping."
+          else
+            npm publish --access public
+          fi
 
-            registry_error="$(node -p "JSON.parse(process.argv[1]).error?.code ?? ''" "${registry_result}")"
-            if [[ "${registry_error}" != "E404" ]]; then
-              echo "Could not check ${package_spec} on npm (${registry_error}); stopping." >&2
-              exit 1
-            fi
-
-            (cd "${package_dir}" && npm publish --access public)
-          done
+      - name: Publish Vue package
+        working-directory: packages/vue
+        run: |
+          package_version="$(node -p "require('./package.json').version")"
+          if [[ "$(npm view "@doodle-icons/vue@${package_version}" version --silent || true)" == "${package_version}" ]]; then
+            echo "@doodle-icons/vue@${package_version} is already published; skipping."
+          else
+            npm publish --access public
+          fi
