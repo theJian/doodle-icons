@@ -161,21 +161,6 @@ export function scanIcons(dir: string = defaultIconsDir()): IconDef[] {
   return icons;
 }
 
-/** Original SVG, width/height stripped from the root so it scales via viewBox. */
-export function flutterSvg(def: IconDef): string {
-  return def.rawSvg.replace(/^<svg ([^>]*)>/, (_s, attrs: string) => {
-    const kept = attrs
-      .split(/\s+/)
-      .filter((a) => a && !/^(width|height)=/.test(a))
-      .join(' ');
-    return `<svg ${kept}>`;
-  });
-}
-
-export function slug(def: IconDef): string {
-  return `${def.category}-${def.kebabName}`;
-}
-
 /** Full inline <svg> string (currentColor fills, uniquified clip ids) for
  * server-rendered usage such as the docs site. */
 export function inlineSvg(def: IconDef, extraAttrs: Record<string, string> = {}): string {

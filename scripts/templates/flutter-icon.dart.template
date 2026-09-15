@@ -1,0 +1,21 @@
+import 'package:flutter/widgets.dart' as widgets;
+import 'package:flutter_svg/flutter_svg.dart';
+
+class ${componentName} extends widgets.StatelessWidget {
+  final widgets.Color? color;
+  final double? width;
+  final double? height;
+
+  const ${componentName}({super.key, this.color, this.width, this.height});
+
+  @override
+  widgets.Widget build(widgets.BuildContext context) => SvgPicture.string(
+    r'''
+${svg}''',
+    colorFilter: color != null
+        ? widgets.ColorFilter.mode(color!, widgets.BlendMode.srcIn)
+        : null,
+    width: width,
+    height: height,
+  );
+}

@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
-import { convertIconToJsx, convertIconToVueSvg } from './codegen.ts';
+import { convertIconToFlutterSvg, convertIconToJsx, convertIconToVueSvg } from './codegen.ts';
 import { scanIcons } from './lib.ts';
-import { renderVueTemplate } from './template.ts';
+import { renderTemplate, renderVueTemplate } from './template.ts';
 
 const search = scanIcons().find(({ pascalName }) => pascalName === 'Search');
 assert.ok(search, 'Search icon fixture must exist');
@@ -40,4 +40,34 @@ assert.match(vue, /:width="size"/);
 assert.match(vue, /v-bind="\$attrs"/);
 assert.ok(vueSvg.length < search.rawSvg.length, 'SVGO should reduce the Vue SVG size');
 
-console.log('generation tests passed: optimized React, React Native, and Vue sources');
+const flutterSvg = convertIconToFlutterSvg(search);
+assert.ok(flutterSvg.length < search.rawSvg.length, 'SVGO should reduce the Flutter SVG size');
+assert.match(flutterSvg, /clip-path="url\(#Search-clip0\)"/);
+assert.match(flutterSvg, /id="Search-clip0"/);
+
+for (const icon of scanIcons()) {
+  const svg = convertIconToFlutterSvg(icon);
+  const root = svg.slice(0, svg.indexOf('>') + 1);
+  assert.match(root, /xmlns="http:\/\/www.w3.org\/2000\/svg"/);
+  assert.ok(root.includes(`viewBox="${icon.viewBox}"`), `${icon.pascalName}: preserve viewBox`);
+  assert.doesNotMatch(root, /\s(?:width|height)=/);
+  assert.doesNotMatch(svg, /currentColor/);
+}
+
+const flutter = renderTemplate('flutter-icon.dart.template', {
+  componentName: search.pascalName,
+  svg: flutterSvg,
+});
+assert.match(flutter, /class Search extends widgets.StatelessWidget/);
+assert.ok(flutter.includes(`r'''\n${flutterSvg}'''`));
+assert.match(flutter, /widgets.ColorFilter.mode\(color!, widgets.BlendMode.srcIn\)/);
+assert.match(flutter, /width: width/);
+assert.match(flutter, /height: height/);
+assert.equal(
+  renderTemplate('flutter-icon-exports.dart.template', {
+    snakeName: search.snakeName,
+  }),
+  "export 'src/search.dart';\n",
+);
+
+console.log('generation tests passed: optimized React, React Native, Vue, and Flutter sources');
