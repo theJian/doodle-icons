@@ -37,8 +37,8 @@
   "keywords": ["icons", "svg", "doodle", "hand-drawn", "react-native"],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jian/doodle-icons.git",
+    "url": "git+https://github.com/theJian/doodle-icons.git",
     "directory": "packages/react-native"
   },
-  "homepage": "https://github.com/jian/doodle-icons#readme"
+  "homepage": "https://github.com/theJian/doodle-icons#readme"
 }
