@@ -6,13 +6,14 @@ on:
 
 permissions:
   contents: read
+  id-token: write
 
 concurrency:
   group: npm-publish-${{ github.event.release.tag_name }}
   cancel-in-progress: false
 
 jobs:
-  verify:
+  publish:
     if: github.event.release.prerelease == false
     runs-on: ubuntu-latest
     steps:
@@ -62,70 +63,14 @@ jobs:
           npm pack --dry-run --workspace @doodle-icons/react-native
           npm pack --dry-run --workspace @doodle-icons/vue
 
-  publish:
-    name: Publish ${{ matrix.package }}
-    needs: verify
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      id-token: write
-    strategy:
-      fail-fast: false
-      matrix:
-        package: [react, react-native, vue]
-    steps:
-      - uses: actions/checkout@v6
-        with:
-          ref: ${{ github.event.release.tag_name }}
-
-      - uses: actions/setup-node@v6
-        with:
-          node-version: '24'
-          registry-url: https://registry.npmjs.org
-          package-manager-cache: false
-
-      - name: Check published version
-        id: registry
-        env:
-          RELEASE_TAG: ${{ github.event.release.tag_name }}
-        run: |
-          package_version="${RELEASE_TAG#v}"
-          registry_status="$(curl --silent --show-error --location --retry 3 --max-time 30 \
-            --output /dev/null --write-out '%{http_code}' \
-            "https://registry.npmjs.org/@doodle-icons%2F${{ matrix.package }}/${package_version}")"
-
-          case "${registry_status}" in
-            200)
-              echo "@doodle-icons/${{ matrix.package }}@${package_version} is already published; skipping."
-              echo 'published=true' >> "${GITHUB_OUTPUT}"
-              ;;
-            404)
-              echo 'published=false' >> "${GITHUB_OUTPUT}"
-              ;;
-            *)
-              echo "Could not check npm registry (HTTP ${registry_status})." >&2
-              exit 1
-              ;;
-          esac
-
-      - uses: oven-sh/setup-bun@v2
-        if: steps.registry.outputs.published == 'false'
-        with:
-          bun-version: 1.3.8
-
-      - name: Install dependencies
-        if: steps.registry.outputs.published == 'false'
-        run: bun install --frozen-lockfile
-
-      - name: Build package
-        if: steps.registry.outputs.published == 'false'
-        run: bun run build:${{ matrix.package }}
-
-      - name: Check package contents
-        if: steps.registry.outputs.published == 'false'
-        run: npm pack --dry-run --workspace @doodle-icons/${{ matrix.package }}
-
-      - name: Publish package
-        if: steps.registry.outputs.published == 'false'
+      - name: Publish React package
         run: npm publish --access public
-        working-directory: packages/${{ matrix.package }}
+        working-directory: packages/react
+
+      - name: Publish React Native package
+        run: npm publish --access public
+        working-directory: packages/react-native
+
+      - name: Publish Vue package
+        run: npm publish --access public
+        working-directory: packages/vue
