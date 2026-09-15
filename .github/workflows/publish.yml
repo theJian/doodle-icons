@@ -3,23 +3,29 @@ name: Publish npm packages
 on:
   release:
     types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Stable release tag to publish or retry (for example, v0.1.1)'
+        required: true
+        type: string
 
 permissions:
   contents: read
   id-token: write
 
 concurrency:
-  group: npm-publish-${{ github.event.release.tag_name }}
+  group: npm-publish-${{ github.event.release.tag_name || inputs.tag }}
   cancel-in-progress: false
 
 jobs:
   publish:
-    if: github.event.release.prerelease == false
+    if: github.event_name == 'workflow_dispatch' || github.event.release.prerelease == false
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
         with:
-          ref: ${{ github.event.release.tag_name }}
+          ref: ${{ github.event.release.tag_name || inputs.tag }}
 
       - uses: oven-sh/setup-bun@v2
         with:
@@ -36,11 +42,15 @@ jobs:
 
       - name: Verify package versions
         env:
-          RELEASE_TAG: ${{ github.event.release.tag_name }}
+          RELEASE_TAG: ${{ github.event.release.tag_name || inputs.tag }}
         run: |
           package_version="${RELEASE_TAG#v}"
           if [[ "v${package_version}" != "${RELEASE_TAG}" ]]; then
             echo "Release tag must use the v<version> format; received ${RELEASE_TAG}." >&2
+            exit 1
+          fi
+          if [[ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" && "${package_version}" == *-* ]]; then
+            echo "Manual publishing only supports stable release tags; received ${RELEASE_TAG}." >&2
             exit 1
           fi
 
