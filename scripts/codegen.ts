@@ -8,7 +8,7 @@ import {
 import { jsxTargetPlugin, type JsxTarget } from './jsx-target.ts';
 import type { IconDef } from './lib.ts';
 
-export type CodegenTarget = JsxTarget | 'vue';
+export type CodegenTarget = JsxTarget | 'vue' | 'flutter';
 type SvgProps = Record<string, string | null>;
 type Components = Set<string>;
 
@@ -22,14 +22,14 @@ function optimizationPlugins(
       params: {
         overrides: {
           cleanupIds: false,
-          convertColors: { currentColor: 'black' },
+          convertColors: { currentColor: target === 'flutter' ? false : 'black' },
           ...(target === 'react-native-svg'
             ? { inlineStyles: { onlyMatchedOnce: false } }
             : {}),
         },
       },
     },
-    { name: 'removeXMLNS' },
+    ...(target === 'flutter' ? [{ name: 'removeDimensions' }] : [{ name: 'removeXMLNS' }]),
     {
       name: 'prefixIds',
       params: {
@@ -138,4 +138,10 @@ export function convertIconToVueSvg(def: IconDef): string {
     const staticAttributes = attributes.replace(/\s(?:width|height)="[^"]*"/g, '');
     return `<svg${staticAttributes} :width="size" :height="size" aria-hidden="true" :style="{ color }" v-bind="$attrs">`;
   });
+}
+
+/** Flutter applies color through ColorFilter, so preserve the SVG's own paints. */
+export function convertIconToFlutterSvg(def: IconDef): string {
+  const sourceFile = `${def.category}/${def.kebabName}.svg`;
+  return optimizeIcon(def, 'flutter', sourceFile).data;
 }

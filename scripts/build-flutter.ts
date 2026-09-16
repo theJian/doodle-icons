@@ -1,45 +1,33 @@
 import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { flutterSvg, scanIcons, type IconDef } from './lib.ts';
+import { convertIconToFlutterSvg } from './codegen.ts';
+import { scanIcons, type IconDef } from './lib.ts';
+import { renderTemplate } from './template.ts';
 
 const pkgDir = join(import.meta.dir, '..', 'packages', 'flutter');
 const libDir = join(pkgDir, 'lib');
 const srcDir = join(libDir, 'src');
 
-function iconTemplate(name: string, svg: string): string {
-  return `import 'package:flutter/widgets.dart' as widgets;
-import 'package:flutter_svg/flutter_svg.dart';
-
-class ${name} extends widgets.StatelessWidget {
-  final widgets.Color? color;
-  final double? width;
-  final double? height;
-
-  const ${name}({super.key, this.color, this.width, this.height});
-
-  @override
-  widgets.Widget build(widgets.BuildContext context) => SvgPicture.string(
-    '''
-${svg}''',
-    colorFilter: color != null
-        ? widgets.ColorFilter.mode(color!, widgets.BlendMode.srcIn)
-        : null,
-    width: width,
-    height: height,
-  );
-}
-`;
+function iconComponent(def: IconDef): string {
+  return renderTemplate('flutter-icon.dart.template', {
+    componentName: def.pascalName,
+    svg: convertIconToFlutterSvg(def),
+  });
 }
 
-const icons: IconDef[] = scanIcons();
+const icons = scanIcons();
 
 rmSync(libDir, { recursive: true, force: true });
 mkdirSync(srcDir, { recursive: true });
 
 const exports: string[] = [];
 for (const def of icons) {
-  writeFileSync(join(srcDir, `${def.snakeName}.dart`), iconTemplate(def.pascalName, flutterSvg(def)));
-  exports.push(`export 'src/${def.snakeName}.dart';`);
+  writeFileSync(join(srcDir, `${def.snakeName}.dart`), iconComponent(def));
+  exports.push(
+    renderTemplate('flutter-icon-exports.dart.template', {
+      snakeName: def.snakeName,
+    }).trim(),
+  );
 }
 writeFileSync(join(libDir, 'doodle_icons.dart'), `${exports.join('\n')}\n`);
 
