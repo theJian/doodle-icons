@@ -9,11 +9,12 @@ Hand-drawn [doodle icons](https://github.com/jian/doodle-icons) for Flutter.
 ```dart
 import 'package:doodle_icons/doodle_icons.dart';
 
-const DoodleSearch()
-const DoodleRocket(color: Colors.blue, width: 48, height: 48)
+const Search()
+const Rocket(color: Colors.blue, size: 48)
 ```
 
-Every icon is a `StatelessWidget` accepting `color`, `width` and `height`.
+Every icon is a `StatelessWidget` with `size` and `color` options.
+`size` defaults to 24 logical pixels and sets both dimensions.
 
 > Note: `lib/` is generated — run `bun run build:flutter` from the repository
 > root before building this package locally.

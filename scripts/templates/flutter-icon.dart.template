@@ -3,19 +3,28 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 class ${componentName} extends widgets.StatelessWidget {
   final widgets.Color? color;
+  final double size;
   final double? width;
   final double? height;
 
-  const ${componentName}({super.key, this.color, this.width, this.height});
+  const ${componentName}({
+    super.key,
+    this.color,
+    this.size = 24,
+    this.width,
+    this.height,
+  });
 
   @override
-  widgets.Widget build(widgets.BuildContext context) => SvgPicture.string(
-    r'''
+  widgets.Widget build(widgets.BuildContext context) => widgets.SizedBox(
+    width: width ?? size,
+    height: height ?? size,
+    child: SvgPicture.string(
+      r'''
 ${svg}''',
-    colorFilter: color != null
-        ? widgets.ColorFilter.mode(color!, widgets.BlendMode.srcIn)
-        : null,
-    width: width,
-    height: height,
+      colorFilter: color != null
+          ? widgets.ColorFilter.mode(color!, widgets.BlendMode.srcIn)
+          : null,
+    ),
   );
 }
