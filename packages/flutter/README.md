@@ -2,7 +2,7 @@
 
 [![pub version](https://img.shields.io/pub/v/doodle_icons)](https://pub.dev/packages/doodle_icons)
 
-400+ handcrafted doodle icons. Based on icon designs by [Khushmeen Sidhu](https://khushmeen.com/icons.html).
+400+ handcrafted doodle icons. Based on [Doodle Icons](https://khushmeen.com/icons.html) by Khushmeen Sidhu.
 
 [Browse all icons →](https://thejian.github.io/doodle-icons/)
 

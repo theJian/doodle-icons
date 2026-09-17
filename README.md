@@ -2,7 +2,7 @@
 
 400+ handcrafted doodle icons for React, React Native, Vue and Flutter.
 
-Based on icon designs by [Khushmeen Sidhu](https://khushmeen.com/icons.html).
+Based on [Doodle Icons](https://khushmeen.com/icons.html) by Khushmeen Sidhu.
 
 **[Browse all icons →](https://thejian.github.io/doodle-icons/)**
 
