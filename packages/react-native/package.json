@@ -30,8 +30,8 @@
     "react-native-svg": ">=14"
   },
   "devDependencies": {
-    "@types/react": "^19.1.0",
-    "react": "^19.1.0",
+    "@types/react": "^19.3.0",
+    "react": "^19.3.0",
     "react-native-svg": "^15.12.0"
   },
   "keywords": ["icons", "svg", "doodle", "hand-drawn", "react-native"],
