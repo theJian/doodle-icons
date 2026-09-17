@@ -1,24 +1,28 @@
-# doodle_icons
+# Doodle Icons for Flutter
 
-Hand-drawn [doodle icons](https://github.com/jian/doodle-icons) for Flutter.
+[![pub version](https://img.shields.io/pub/v/doodle_icons)](https://pub.dev/packages/doodle_icons)
 
-400+ handcrafted icons across 15 categories, rendered with `flutter_svg`.
+400+ handcrafted doodle icons designed by [Khushmeen Sidhu](https://khushmeen.com/icons.html).
+
+[Browse all icons →](https://thejian.github.io/doodle-icons/)
+
+## Installation
+
+```bash
+flutter pub add doodle_icons
+```
 
 ## Usage
 
 ```dart
+import 'package:flutter/material.dart';
 import 'package:doodle_icons/doodle_icons.dart';
 
-const Search()
-const Rocket(color: Colors.blue, size: 48)
+const Rocket(size: 48, color: Colors.blue);
 ```
 
-Every icon is a `StatelessWidget` with `size` and `color` options.
-`size` defaults to 24 logical pixels and sets both dimensions.
-
-> Note: `lib/` is generated — run `bun run build:flutter` from the repository
-> root before building this package locally.
+Icons default to 24 logical pixels. Use `size` to set both dimensions, or `width` and `height` to override them individually.
 
 ## License
 
-Package code: MIT. Icons: [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/) (public domain).
+Icons: [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/) (public domain). Package code: [MIT](https://github.com/theJian/doodle-icons/blob/main/LICENSE).
