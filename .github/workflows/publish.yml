@@ -1,4 +1,4 @@
-name: Publish npm packages
+name: Publish packages
 
 on:
   release:
@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: 'Stable release tag to publish or retry (for example, v0.1.1)'
+        description: 'Stable release tag to publish or retry; run this workflow from the same tag'
         required: true
         type: string
 
@@ -15,7 +15,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: npm-publish-${{ github.event.release.tag_name || inputs.tag }}
+  group: publish-${{ github.event.release.tag_name || inputs.tag }}
   cancel-in-progress: false
 
 jobs:
@@ -37,6 +37,13 @@ jobs:
           registry-url: https://registry.npmjs.org
           package-manager-cache: false
 
+      # setup-dart provisions the pub.dev OIDC token; Flutter supplies the SDK used below.
+      - uses: dart-lang/setup-dart@v1
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
@@ -54,6 +61,17 @@ jobs:
             exit 1
           fi
 
+          if [[ "${GITHUB_REF}" != "refs/tags/${RELEASE_TAG}" ]]; then
+            echo "Run this workflow from the ${RELEASE_TAG} tag so pub.dev can authenticate the release." >&2
+            exit 1
+          fi
+
+          manifest_version="$(bun -e 'console.log(Bun.YAML.parse(await Bun.file("packages/flutter/pubspec.yaml").text()).version)')"
+          if [[ "${manifest_version}" != "${package_version}" ]]; then
+            echo "packages/flutter/pubspec.yaml is version ${manifest_version}, expected ${package_version}." >&2
+            exit 1
+          fi
+
           for package_dir in packages/react packages/react-native packages/vue; do
             manifest_version="$(node -p "require('./${package_dir}/package.json').version")"
             if [[ "${manifest_version}" != "${package_version}" ]]; then
@@ -66,6 +84,13 @@ jobs:
         run: |
           bun run build
           bun run test
+
+      - name: Validate Flutter package
+        working-directory: packages/flutter
+        run: |
+          flutter pub get
+          flutter analyze
+          flutter pub publish --dry-run
 
       - name: Check package contents
         run: |
@@ -102,3 +127,17 @@ jobs:
           else
             npm publish --access public
           fi
+
+      - name: Publish Flutter package
+        working-directory: packages/flutter
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name || inputs.tag }}
+        run: |
+          package_version="${RELEASE_TAG#v}"
+          status="$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' \
+            "https://pub.dev/api/packages/doodle_icons/versions/${package_version}")"
+          case "${status}" in
+            200) echo "doodle_icons@${package_version} is already published; skipping." ;;
+            404) flutter pub publish --force ;;
+            *) echo "Failed to check pub.dev for doodle_icons@${package_version}: HTTP ${status}." >&2; exit 1 ;;
+          esac

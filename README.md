@@ -116,3 +116,16 @@ import icons from '@doodle-icons/metadata/icons.json';
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup and repository architecture.
+
+## Publishing
+
+The `Publish packages` workflow publishes the npm packages and Flutter's
+`doodle_icons` package when a stable GitHub release is published. Package versions
+must match the release tag (`v<version>`). Already published versions are skipped.
+
+For Flutter, enable [automated publishing on pub.dev](https://dart.dev/tools/pub/automated-publishing)
+for `doodle_icons`, using repository `theJian/doodle-icons` and tag pattern
+`v{{version}}`. A new package must be published manually once before this can be configured.
+To retry manually, dispatch the workflow **from the release tag** and supply the
+same tag as the `tag` input; checking out a tag from a branch run does not change
+the GitHub OIDC identity required by pub.dev.
