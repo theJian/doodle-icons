@@ -2,7 +2,7 @@
 
 [![npm version](https://img.shields.io/npm/v/@doodle-icons/react-native)](https://www.npmjs.com/package/@doodle-icons/react-native)
 
-400+ handcrafted doodle icons designed by [Khushmeen Sidhu](https://khushmeen.com/icons.html).
+400+ handcrafted doodle icons. Based on icon designs by [Khushmeen Sidhu](https://khushmeen.com/icons.html).
 
 [Browse all icons →](https://thejian.github.io/doodle-icons/)
 
