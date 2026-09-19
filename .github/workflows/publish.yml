@@ -54,7 +54,7 @@ jobs:
             exit 1
           fi
 
-          for package_dir in packages/react packages/react-native packages/vue; do
+          for package_dir in packages/react packages/react-native packages/vue packages/solid; do
             manifest_version="$(node -p "require('./${package_dir}/package.json').version")"
             if [[ "${manifest_version}" != "${package_version}" ]]; then
               echo "${package_dir}/package.json is version ${manifest_version}, expected ${package_version}." >&2
@@ -72,6 +72,7 @@ jobs:
           npm pack --dry-run --workspace @doodle-icons/react
           npm pack --dry-run --workspace @doodle-icons/react-native
           npm pack --dry-run --workspace @doodle-icons/vue
+          npm pack --dry-run --workspace @doodle-icons/solid
 
       - name: Publish React package
         working-directory: packages/react
@@ -99,6 +100,16 @@ jobs:
           package_version="$(node -p "require('./package.json').version")"
           if [[ "$(npm view "@doodle-icons/vue@${package_version}" version --silent || true)" == "${package_version}" ]]; then
             echo "@doodle-icons/vue@${package_version} is already published; skipping."
+          else
+            npm publish --access public
+          fi
+
+      - name: Publish SolidJS package
+        working-directory: packages/solid
+        run: |
+          package_version="$(node -p "require('./package.json').version")"
+          if [[ "$(npm view "@doodle-icons/solid@${package_version}" version --silent || true)" == "${package_version}" ]]; then
+            echo "@doodle-icons/solid@${package_version} is already published; skipping."
           else
             npm publish --access public
           fi

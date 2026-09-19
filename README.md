@@ -1,6 +1,8 @@
-# doodle-icons
+# Doodle Icons
 
-400+ handcrafted doodle icons for React, React Native, Vue and Flutter.
+![Doodle Icons — 400+ handcrafted icons](.github/assets/hero.png)
+
+400+ handcrafted doodle icons for React, React Native, Vue, SolidJS and Flutter.
 
 Based on [Doodle Icons](https://khushmeen.com/icons.html) by Khushmeen Sidhu.
 
@@ -15,6 +17,7 @@ See each package’s README for installation and usage.
 | React | [@doodle-icons/react](packages/react/README.md) |
 | React Native | [@doodle-icons/react-native](packages/react-native/README.md) |
 | Vue 3 | [@doodle-icons/vue](packages/vue/README.md) |
+| SolidJS | [@doodle-icons/solid](packages/solid/README.md) |
 | Flutter | [doodle_icons](packages/flutter/README.md) |
 
 ## License

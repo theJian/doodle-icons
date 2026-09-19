@@ -1,0 +1,9 @@
+import { mergeProps, splitProps } from 'solid-js';
+import { useIconProps, type DoodleIconProps } from '../context.js';
+
+export type ${componentName}Props = DoodleIconProps;
+
+export function ${componentName}(passedProps: ${componentName}Props) {
+  const [local, props] = splitProps(mergeProps(useIconProps(), passedProps), ['size', 'color']);
+  return (${jsx});
+}
