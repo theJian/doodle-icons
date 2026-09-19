@@ -1,4 +1,6 @@
-# doodle-icons
+# Doodle Icons
+
+![Doodle Icons — 400+ handcrafted icons](.github/assets/hero.png)
 
 400+ handcrafted doodle icons for React, React Native, Vue and Flutter.
 
