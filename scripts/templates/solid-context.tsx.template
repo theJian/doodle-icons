@@ -1,0 +1,19 @@
+import { createContext, mergeProps, splitProps, useContext, type JSX } from 'solid-js';
+
+export type DoodleIconConfig = {
+  size?: number | string;
+  color?: string;
+};
+
+const DoodleIconContext = createContext<DoodleIconConfig>({});
+
+export function DoodleIconProvider(props: DoodleIconConfig & { children?: JSX.Element }) {
+  const [config] = splitProps(props, ['size', 'color']);
+  return <DoodleIconContext.Provider value={config}>{props.children}</DoodleIconContext.Provider>;
+}
+
+export function useIconProps(): Required<DoodleIconConfig> {
+  return mergeProps({ size: 24, color: 'currentColor' }, useContext(DoodleIconContext));
+}
+
+export type DoodleIconProps = Omit<JSX.SvgSVGAttributes<SVGSVGElement>, 'fill'> & DoodleIconConfig;

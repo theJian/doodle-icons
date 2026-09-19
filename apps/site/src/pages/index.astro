@@ -48,7 +48,7 @@ const frameworkLogos = {
     <title>doodle-icons — 400+ handcrafted icons</title>
     <meta
       name="description"
-      content="400+ handcrafted icons by Khushmeen Sidhu. Browse and copy components for React, React Native, Vue and Flutter."
+      content="400+ handcrafted icons by Khushmeen Sidhu. Browse and copy components for React, React Native, Vue, SolidJS and Flutter."
     />
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✏️</text></svg>" />
   </head>
@@ -86,7 +86,7 @@ const frameworkLogos = {
 
         <div class="hero-copy">
           <h1 id="hero-title">doodle icons</h1>
-          <p>400+ handcrafted icons for React, React Native, Vue and Flutter.</p>
+          <p>400+ handcrafted icons for React, React Native, Vue, SolidJS and Flutter.</p>
           <div class="hero-actions">
             <a class="button button-primary" href="#catalog">Browse icons</a>
             <a class="button button-secondary" href="https://github.com/theJian/doodle-icons">
@@ -202,6 +202,10 @@ const frameworkLogos = {
               <span class="framework-logo" aria-hidden="true" set:html={frameworkLogos.react} />
               <span>React Native</span>
             </span>
+            <span class="copy-confirmation" aria-hidden="true">Copied</span>
+          </button>
+          <button data-what="solid" type="button">
+            <span class="copy-label">SolidJS</span>
             <span class="copy-confirmation" aria-hidden="true">Copied</span>
           </button>
           <button data-what="flutter" type="button">
@@ -394,6 +398,7 @@ const frameworkLogos = {
         return {
           svg: standaloneSvg(card, '#000000'),
           react: `import { ${pascal} } from '@doodle-icons/react';\n\nexport function Example() {\n  return <${pascal} size={64} />;\n}`,
+          solid: `import { ${pascal} } from '@doodle-icons/solid';\n\nexport function Example() {\n  return <${pascal} size={64} />;\n}`,
           vue: `import { ${pascal} } from '@doodle-icons/vue';\n\n<template>\n  <${pascal} :size="64" />\n</template>`,
           rn: `import { ${pascal} } from '@doodle-icons/react-native';\n\nexport const Example = () => (\n  <${pascal} size={64} />\n);`,
           flutter: `import 'package:doodle_icons/doodle_icons.dart';\n\nconst ${pascal}(width: 64, height: 64)`,
