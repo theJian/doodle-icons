@@ -1,8 +1,6 @@
-# Doodle Icons
-
 ![Doodle Icons — 400+ handcrafted icons](.github/assets/hero.png)
 
-400+ handcrafted doodle icons for React, React Native, Vue and Flutter.
+Doodle icons for React, React Native, Vue and Flutter.
 
 Based on [Doodle Icons](https://khushmeen.com/icons.html) by Khushmeen Sidhu.
 
@@ -23,6 +21,3 @@ See each package’s README for installation and usage.
 
 Icons: [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/) (public domain). Package code: [MIT](LICENSE).
 
-## Contributing
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup.
