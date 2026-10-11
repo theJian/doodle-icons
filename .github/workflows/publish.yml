@@ -1,8 +1,9 @@
 name: Publish packages
 
 on:
-  release:
-    types: [published]
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
   workflow_dispatch:
     inputs:
       tag:
@@ -15,17 +16,16 @@ permissions:
   id-token: write
 
 concurrency:
-  group: publish-${{ github.event.release.tag_name || inputs.tag }}
+  group: publish-${{ inputs.tag || github.ref_name }}
   cancel-in-progress: false
 
 jobs:
   publish:
-    if: github.event_name == 'workflow_dispatch' || github.event.release.prerelease == false
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
         with:
-          ref: ${{ github.event.release.tag_name || inputs.tag }}
+          ref: ${{ inputs.tag || github.ref_name }}
 
       - uses: oven-sh/setup-bun@v2
         with:
@@ -49,15 +49,11 @@ jobs:
 
       - name: Verify package versions
         env:
-          RELEASE_TAG: ${{ github.event.release.tag_name || inputs.tag }}
+          RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
         run: |
           package_version="${RELEASE_TAG#v}"
-          if [[ "v${package_version}" != "${RELEASE_TAG}" ]]; then
-            echo "Release tag must use the v<version> format; received ${RELEASE_TAG}." >&2
-            exit 1
-          fi
-          if [[ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" && "${package_version}" == *-* ]]; then
-            echo "Manual publishing only supports stable release tags; received ${RELEASE_TAG}." >&2
+          if [[ ! "${RELEASE_TAG}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Publishing only supports stable v<major>.<minor>.<patch> tags; received ${RELEASE_TAG}." >&2
             exit 1
           fi
 
@@ -131,7 +127,7 @@ jobs:
       - name: Publish Flutter package
         working-directory: packages/flutter
         env:
-          RELEASE_TAG: ${{ github.event.release.tag_name || inputs.tag }}
+          RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
         run: |
           package_version="${RELEASE_TAG#v}"
           status="$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' \
