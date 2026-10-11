@@ -10,12 +10,12 @@ Based on [Doodle Icons](https://khushmeen.com/icons.html) by Khushmeen Sidhu.
 
 See each package’s README for installation and usage.
 
-| Framework | Package |
-| --- | --- |
-| React | [@doodle-icons/react](packages/react/README.md) |
-| React Native | [@doodle-icons/react-native](packages/react-native/README.md) |
-| Vue 3 | [@doodle-icons/vue](packages/vue/README.md) |
-| Flutter | [doodle_icons](packages/flutter/README.md) |
+| Framework | Package | Version |
+| --- | --- | --- |
+| React | [@doodle-icons/react](packages/react/README.md) | [![npm version](https://img.shields.io/npm/v/@doodle-icons/react)](https://www.npmjs.com/package/@doodle-icons/react) |
+| React Native | [@doodle-icons/react-native](packages/react-native/README.md) | [![npm version](https://img.shields.io/npm/v/@doodle-icons/react-native)](https://www.npmjs.com/package/@doodle-icons/react-native) |
+| Vue 3 | [@doodle-icons/vue](packages/vue/README.md) | [![npm version](https://img.shields.io/npm/v/@doodle-icons/vue)](https://www.npmjs.com/package/@doodle-icons/vue) |
+| Flutter | [doodle_icons](packages/flutter/README.md) | [![pub version](https://img.shields.io/pub/v/doodle_icons)](https://pub.dev/packages/doodle_icons) |
 
 ## License
 
