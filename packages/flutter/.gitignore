@@ -3,3 +3,4 @@ build/
 .packages
 .pub-cache/
 .pub/
+pubspec.lock

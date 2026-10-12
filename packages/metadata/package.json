@@ -15,7 +15,7 @@
   "keywords": ["icons", "doodle", "metadata"],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jian/doodle-icons.git",
+    "url": "git+https://github.com/theJian/doodle-icons.git",
     "directory": "packages/metadata"
   }
 }

@@ -1,9 +1,9 @@
 name: doodle_icons
 description: Hand-drawn doodle icons for Flutter. 400+ handcrafted icons across 15 categories.
-version: 0.1.0
-homepage: https://github.com/jian/doodle-icons
-repository: https://github.com/jian/doodle-icons
-issue_tracker: https://github.com/jian/doodle-icons/issues
+version: 0.2.0
+homepage: https://github.com/theJian/doodle-icons
+repository: https://github.com/theJian/doodle-icons
+issue_tracker: https://github.com/theJian/doodle-icons/issues
 
 environment:
   sdk: ^3.8.0
