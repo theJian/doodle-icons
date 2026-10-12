@@ -22,7 +22,7 @@
     "@vitejs/plugin-vue": "^6.0.8",
     "@vue/language-core": "^3.3.11",
     "@vue/server-renderer": "^3.5.0",
-    "esbuild": "^0.27.7",
+    "esbuild": "^0.28.2",
     "prettier": "^3.6.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
