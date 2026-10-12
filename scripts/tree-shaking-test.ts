@@ -3,7 +3,7 @@ import { build } from 'esbuild';
 import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
-for (const framework of ['react', 'vue', 'react-native']) {
+for (const framework of ['react', 'vue', 'react-native', 'solid']) {
   const result = await build({
     stdin: {
       contents: `export { Rocket } from '@doodle-icons/${framework}';`,
@@ -15,7 +15,7 @@ for (const framework of ['react', 'vue', 'react-native']) {
     minify: true,
     write: false,
     metafile: true,
-    external: ['react', 'vue', 'react-native-svg'],
+    external: ['react', 'vue', 'react-native-svg', 'solid-js', 'solid-js/*'],
   });
   const output = Object.values(result.metafile!.outputs)[0];
   const includedIcons = Object.entries(output.inputs)

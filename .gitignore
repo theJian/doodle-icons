@@ -7,6 +7,7 @@ dist/
 packages/react/src/
 packages/react-native/src/
 packages/vue/src/
+packages/solid/src/
 packages/flutter/lib/
 packages/metadata/icons.json
 

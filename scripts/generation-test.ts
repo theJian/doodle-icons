@@ -16,6 +16,11 @@ assert.match(react.jsx, /clipPath="url\(#Search-clip0\)"/);
 assert.match(react.jsx, /width=\{size\}/);
 assert.ok(react.jsx.length < search.rawSvg.length, 'SVGO should reduce the source SVG size');
 
+const solid = convertIconToJsx(search, 'solid', { width: '{local.size}', '{...props}': null });
+assert.match(solid.jsx, /clip-path="url\(#Search-clip0\)"/);
+assert.match(solid.jsx, /fill="currentColor"/);
+assert.doesNotMatch(solid.jsx, /clipPath=/);
+
 const reactNative = convertIconToJsx(search, 'react-native-svg', {
   width: '{size}',
   height: '{size}',

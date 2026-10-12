@@ -2,7 +2,7 @@ import type { CustomPlugin, XastElement } from 'svgo';
 import jsxAttributeMappings from './jsx-attribute-mappings.ts';
 import reactNativeSvgElementMappings from './react-native-svg-element-mappings.ts';
 
-export type JsxTarget = 'react-dom' | 'react-native-svg';
+export type JsxTarget = 'react-dom' | 'react-native-svg' | 'solid';
 
 function jsxAttributeName(name: string): string {
   return (jsxAttributeMappings as Record<string, string>)[name.toLowerCase()] ?? name;
@@ -27,7 +27,7 @@ export function jsxTargetPlugin(target: JsxTarget, sourceFile: string): CustomPl
             }
             node.name = component;
           }
-          renameAttributes(node);
+          if (target !== 'solid') renameAttributes(node);
         },
       },
     }),
