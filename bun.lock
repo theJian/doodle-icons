@@ -37,7 +37,7 @@
     },
     "packages/react": {
       "name": "@doodle-icons/react",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "devDependencies": {
         "@types/react": "^19.1.0",
         "react": "^19.1.0",
@@ -49,7 +49,7 @@
     },
     "packages/react-native": {
       "name": "@doodle-icons/react-native",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "devDependencies": {
         "@types/react": "^19.1.0",
         "react": "^19.1.0",
@@ -63,7 +63,7 @@
     },
     "packages/vue": {
       "name": "@doodle-icons/vue",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "devDependencies": {
         "vue": "^3.5.0",
       },
